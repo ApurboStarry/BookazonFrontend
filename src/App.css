@@ -1,5 +1,5 @@
 .App {
-  text-align: center;
+  /* text-align: center; */
 }
 
 .App-logo {
@@ -35,4 +35,29 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.formStyle {
+  margin: auto;
+  padding-left: 15%;
+  padding-right: 15%;
+  padding-top: 20px;
+}
+
+table {
+  table-layout: fixed;
+}
+
+.booksTable {
+  margin: auto;
+}
+
+td,
+th {
+  word-wrap: break-word;
+  text-align: center;
+}
+
+.tableHeader {
+  text-align: center;
 }
