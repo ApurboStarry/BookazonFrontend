@@ -1,14 +1,26 @@
 import React, { Component } from "react";
 import bookService from "../apiServices/bookService";
+import { Link } from "react-router-dom";
 
 class Home extends Component {
-  state = { pageNumber: 1, books: [] };
+  state = { pageNumber: 1, pages: [], books: [] };
 
   async componentDidMount() {
     const books = await bookService.getBooks(this.state.pageNumber);
-    books.map((book) => console.log(book));
-    this.setState({ books: books });
+    const numberOfPages = await bookService.getNumberOfPages();
+
+    const pages = [];
+    for (let i = 1; i <= numberOfPages; i++) {
+      pages.push(i);
+    }
+
+    this.setState({ pageNumber: 1, pages, books });
   }
+
+  handlePageChange = async  (pageNumber) => {
+    const books = await bookService.getBooks(pageNumber);
+    this.setState({ pageNumber, books });
+  };
 
   render() {
     return (
@@ -31,9 +43,12 @@ class Home extends Component {
             </thead>
             <tbody>
               {this.state.books.map((book) => {
+                const bookLink = `/book/${book._id}`
                 return (
                   <tr key={book._id}>
-                    <td>{book.name}</td>
+                    <td>
+                      <Link to={bookLink}>{book.name}</Link>
+                    </td>
                     <td>{book.genreId.name}</td>
                     <td>{book.unitPrice}</td>
                     <td>
@@ -44,6 +59,26 @@ class Home extends Component {
               })}
             </tbody>
           </table>
+
+          <nav aria-label="Page navigation example">
+            <ul className="pagination">
+              {this.state.pages.map((page) => {
+                return (
+                  <li
+                    style={{ cursor: "pointer" }}
+                    className={
+                      page === this.state.pageNumber ? "page-item active" : "page-item"
+                    }
+                    key={page}
+                  >
+                    <a onClick={() => this.handlePageChange(page)} className="page-link">
+                      {page}
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+          </nav>
         </div>
       </div>
     );

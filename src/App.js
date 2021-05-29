@@ -20,6 +20,7 @@ import Logout from "./components/common/logout";
 import RegisterForm from "./components/common/registerForm";
 import SellBook from "./components/sellBook";
 import Cart from "./components/cart";
+import Book from "./components/book";
 class App extends Component {
   state = {};
 
@@ -50,6 +51,7 @@ class App extends Component {
             <Route path="/publishers" component={Publishers} />
             <Route path="/sellbook" component={SellBook} />
             <Route path="/cart" component={Cart} />
+            <Route path="/book" component={Book} />
             <Route path="/" component={Home} />
           </Switch>
         </div>
