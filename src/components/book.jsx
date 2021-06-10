@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import bookService from "../apiServices/bookService";
 
 class Book extends Component {
-  state = { book: {name: "", unitPrice: 0, genre: "", seller: "", authors: []} };
+  state = { book: { _id: "", name: "", unitPrice: 0, genre: "", seller: "", authors: []} };
 
   getBookIdFromUrl = () => {
     const tokens = this.props.location.pathname.split("/");
@@ -21,11 +21,15 @@ class Book extends Component {
 
   getAuthors = () => {
     let authors = "";
+    if(this.state.book.authors.length === 0) return authors;
+
     if(this.state.book.authors.length === 1) {
-      return this.state.book.authors;
+      return this.state.book.authors[0].name;
     } else {
-      for(let i = 0; i < this.state.book.authors.length; i++) {
-        authors += this.state.book.authors[i].name + ", ";
+      console.log(this.state.book.authors[0]);
+      authors += this.state.book.authors[0].name;
+      for(let i = 1; i < this.state.book.authors.length; i++) {
+        authors += ", " + this.state.book.authors[i].name;
       }
     }
 

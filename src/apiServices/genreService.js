@@ -3,8 +3,15 @@ const { apiUrl } = require("../config.json");
 
 const apiEndpoint = apiUrl + "/genres";
 
-async function getAllGenres() {
-  const { data: genres } = await httpService.get(apiEndpoint);
+async function getAllNonParentGenres() {
+  const { data: genres } = await httpService.get(apiEndpoint + "/allNonParentGenres");
+  return genres;
+}
+
+async function getAllLeafGenres() {
+  const { data: genres } = await httpService.get(
+    apiEndpoint + "/allLeafGenres"
+  );
   return genres;
 }
 
@@ -15,9 +22,16 @@ async function getGenreById(genreId) {
   return genre;
 }
 
+async function getSubgenres(genreId) {
+  const { data: genres } = await httpService.get(apiEndpoint + "/subgenres/" + genreId);
+  return genres;
+}
+
 const defaultExportObj = {
-  getAllGenres: getAllGenres,
-  getGenreById: getGenreById
+  getAllNonParentGenres,
+  getAllLeafGenres,
+  getGenreById,
+  getSubgenres
 };
 
 export default defaultExportObj;

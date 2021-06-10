@@ -21,6 +21,9 @@ import RegisterForm from "./components/common/registerForm";
 import SellBook from "./components/sellBook";
 import Cart from "./components/cart";
 import Book from "./components/book";
+import SearchByGenre from "./components/searchByGenre";
+import SearchByAuthor from "./components/searchByAuthor";
+import SubGenres from "./components/subGenres";
 class App extends Component {
   state = {};
 
@@ -45,13 +48,16 @@ class App extends Component {
             <Route path="/login" component={LoginForm} />
             <Route path="/logout" component={Logout} />
             <Route path="/register" component={RegisterForm} />
-            <Route path="/authors" component={Authors} />
             <Route path="/profile" component={Profile} />
             <Route path="/genres" component={Genres} />
+            <Route path="/subGenres" component={SubGenres} />
+            <Route path="/authors" component={Authors} />
             <Route path="/publishers" component={Publishers} />
             <Route path="/sellbook" component={SellBook} />
             <Route path="/cart" component={Cart} />
             <Route path="/book" component={Book} />
+            <Route path="/search/byGenre" component={SearchByGenre} />
+            <Route path="/search/byAuthor" component={SearchByAuthor} />
             <Route path="/" component={Home} />
           </Switch>
         </div>

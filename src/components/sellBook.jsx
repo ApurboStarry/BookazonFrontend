@@ -14,7 +14,7 @@ class SellBook extends Component {
   };
 
   async getGenres() {
-    const genres = await genreService.getAllGenres();
+    const genres = await genreService.getAllLeafGenres();
     console.log(genres);
 
     return genres;
@@ -130,55 +130,18 @@ class SellBook extends Component {
     const { data, errors } = this.state;
 
     return (
-      <div className="formStyle">
+      <div style={{ paddingBottom: 50 }} className="formStyle">
         <h1>Enter book details</h1>
         <form onSubmit={this.handleSubmit}>
           <Input
             name="name"
             value={data.name}
-            label="Name"
+            label="Title"
             onChange={this.handleChange}
             error={errors.name}
           />
-          <Input
-            name="quantity"
-            value={data.quantity}
-            label="Quantity"
-            onChange={this.handleChange}
-            error={errors.quantity}
-          />
-          <Input
-            name="unitPrice"
-            value={data.unitPrice}
-            label="Unit Price"
-            onChange={this.handleChange}
-            error={errors.unitPrice}
-          />
-          <div className="form-group">
-            <label
-              style={{ paddingLeft: 5 }}
-              className="form-label"
-              htmlFor="genreId"
-            >
-              Genre
-            </label>
-            <select
-              name="genreId"
-              onChange={this.handleChange}
-              id="genreId"
-              className="form-select mb-3"
-              value={this.state.data.genreId}
-            >
-              <option value="0"></option>
-              {this.state.genres.map((genre) => {
-                return (
-                  <option key={genre._id} value={genre._id}>
-                    {genre.name}
-                  </option>
-                );
-              })}
-            </select>
 
+          <div id="addAuthor">
             <label
               style={{ paddingLeft: 5 }}
               htmlFor={"authors"}
@@ -220,6 +183,48 @@ class SellBook extends Component {
               </button>
             </div>
           </div>
+
+          <div className="form-group">
+            <label
+              style={{ paddingLeft: 5 }}
+              className="form-label"
+              htmlFor="genreId"
+            >
+              Genre
+            </label>
+            <select
+              name="genreId"
+              onChange={this.handleChange}
+              id="genreId"
+              className="form-select mb-3"
+              value={this.state.data.genreId}
+            >
+              <option value="0"></option>
+              {this.state.genres.map((genre) => {
+                return (
+                  <option key={genre._id} value={genre._id}>
+                    {genre.name}
+                  </option>
+                );
+              })}
+            </select>
+          </div>
+
+          <Input
+            name="quantity"
+            value={data.quantity}
+            label="Quantity"
+            onChange={this.handleChange}
+            error={errors.quantity}
+          />
+          <Input
+            name="unitPrice"
+            value={data.unitPrice}
+            label="Unit Price"
+            onChange={this.handleChange}
+            error={errors.unitPrice}
+          />
+
           <div style={{ textAlign: "center" }}>
             <button disabled={this.validate()} className="btn btn-primary">
               Add Book
