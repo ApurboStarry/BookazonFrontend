@@ -73,7 +73,9 @@ class NavBarTop extends Component {
               </button>
             </div>
           </div>
-          <button className="btn btn-success">Advanced Search</button>
+          <Link to="/advancedSearch">
+            <button className="btn btn-success">Advanced Search</button>
+          </Link>
         </div>
       </nav>
     );

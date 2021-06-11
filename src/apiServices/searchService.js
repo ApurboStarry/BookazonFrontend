@@ -18,10 +18,16 @@ async function searchBooksByAuthorId(authorId) {
   return books;
 }
 
+async function advancedSearch(searchBody) {
+  const { data: books } = await httpService.post(apiEndpoint + "/advancedSearch", searchBody);
+  return books;
+}
+
 const defaultExportObj = {
   searchBooksByTitle,
   searchBooksByGenreId,
-  searchBooksByAuthorId
+  searchBooksByAuthorId,
+  advancedSearch
 };
 
 export default defaultExportObj;
