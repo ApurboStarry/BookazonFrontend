@@ -1,9 +1,38 @@
 import React, { Component } from 'react';
-import { Link, NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 class NavBarTop extends Component {
-  state = {  }
-  render() {     
+  state = { searchText: "" }
+
+  componentDidMount() {
+    
+  }
+
+  // componentDidUpdate(prevProps, prevState) {
+  //   console.log(prevProps, this.props);
+  //   if(prevProps.history.location !== this.props.history.location) {
+  //     console.log("$$$", this.state.searchText);
+  //   }
+  // }
+
+  handleSearchChange = ({ currentTarget: input }) => {
+    const searchText = input.value;
+    this.setState({ searchText });
+  };
+
+  handleSearchSubmit = () => {
+    this.props.history.push("/search/byTitle/" + this.state.searchText);
+  };
+
+  checkSearchButtonDisability = () => {
+    return this.state.searchText === "";
+  }
+
+  getLink = () => {
+    return this.state.searchText;
+  }
+
+  render() {
     return (
       <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
         <div className="container-fluid">
@@ -22,33 +51,29 @@ class NavBarTop extends Component {
             <span className="navbar-toggler-icon"></span>
           </button>
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
-            {/* <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-              <li className="nav-item">
-                <Link className="nav-link active" aria-current="page" to="#">Home</Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link" to="#">Link</Link>
-              </li>
-              <li className="nav-item dropdown">
-                <Link className="nav-link dropdown-toggle" to="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Dropdown
-                </Link>
-                <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <li><Link className="dropdown-item" to="#">Action</Link></li>
-                  <li><Link className="dropdown-item" to="#">Another action</Link></li>
-                  <li><hr className="dropdown-divider" /></li>
-                  <li><Link className="dropdown-item" to="#">Something else here</Link></li>
-                </ul>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link disabled" to="#" tabindex="-1" aria-disabled="true">Disabled</Link>
-              </li>
-            </ul> */}
             <div className="input-group m-3">
-              <input type="text" className="form-control" placeholder="Search book by title" aria-label="Recipient's username" aria-describedby="basic-addon2" />
-              <button className="input-group-text" id="basic-addon2">Search</button>
+              {/* <form onSubmit={this.handleSearchSubmit}>
+                
+              </form> */}
+              <input
+                type="text"
+                name="searchByTitle"
+                value={this.state.searchText}
+                onChange={this.handleSearchChange}
+                className="form-control"
+                placeholder="Search book by title"
+              />
+              <button
+                disabled={this.checkSearchButtonDisability()}
+                onClick={this.handleSearchSubmit}
+                className="btn btn-primary"
+                id="basic-addon2"
+              >
+                Search
+              </button>
             </div>
           </div>
+          <button className="btn btn-success">Advanced Search</button>
         </div>
       </nav>
     );

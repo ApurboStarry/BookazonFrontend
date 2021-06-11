@@ -24,6 +24,7 @@ import Book from "./components/book";
 import SearchByGenre from "./components/searchByGenre";
 import SearchByAuthor from "./components/searchByAuthor";
 import SubGenres from "./components/subGenres";
+import SearchByTitle from "./components/searchByTitle";
 class App extends Component {
   state = {};
 
@@ -37,11 +38,11 @@ class App extends Component {
 
     return (
       <div className="App">
-        <NavBarTop />
-        <NavBarBottom user={user} />
-        <ToastContainer />
-
         <div className="content">
+          <Route path="/" component={NavBarTop} />
+          <Route path="/" render={(props) => <NavBarBottom user={user} {...props} />} />
+          <Route path="/" component={ToastContainer} />
+
           <Switch>
             {/* <ProtectedRoute path="/passwords" component={AllPasswords} /> */}
 
@@ -58,6 +59,7 @@ class App extends Component {
             <Route path="/book" component={Book} />
             <Route path="/search/byGenre" component={SearchByGenre} />
             <Route path="/search/byAuthor" component={SearchByAuthor} />
+            <Route path="/search/byTitle" component={SearchByTitle} />
             <Route path="/" component={Home} />
           </Switch>
         </div>

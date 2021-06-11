@@ -3,9 +3,13 @@ const { apiUrl } = require("../config.json");
 
 const apiEndpoint = apiUrl + "/search";
 
+async function searchBooksByTitle(searchTitle) {
+  const { data: books } = await httpService.get(apiEndpoint + "/byName/" + searchTitle);
+  return books;
+}
+
 async function searchBooksByGenreId(genreId) {
   const { data: books } = await httpService.get(apiEndpoint + "/byGenre/" + genreId);
-
   return books;
 }
 
@@ -15,6 +19,7 @@ async function searchBooksByAuthorId(authorId) {
 }
 
 const defaultExportObj = {
+  searchBooksByTitle,
   searchBooksByGenreId,
   searchBooksByAuthorId
 };

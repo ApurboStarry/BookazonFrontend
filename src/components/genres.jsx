@@ -11,14 +11,14 @@ class Genres extends Component {
     this.setState({ genres });
   }
 
-  handleGenreClick(genreId) {
+  getLink(genreId) {
     const filteredGenres = this.state.genres.filter(g => g._id === genreId);
     const genre = filteredGenres[0];
 
     if(genre.children.length === 0) {
-      this.props.history.push("/search/byGenre/" + genreId);
+      return "/search/byGenre/" + genreId;
     } else {
-      this.props.history.push("/subGenres/" + genreId);
+      return "/subGenres/" + genreId;
     }
   }
 
@@ -30,7 +30,7 @@ class Genres extends Component {
             return (
               <h3 key={genre._id}>
                 <li>
-                  <Link onClick={() => this.handleGenreClick(genre._id)}>
+                  <Link to={() => this.getLink(genre._id)}>
                     {genre.name}
                   </Link>
                 </li>

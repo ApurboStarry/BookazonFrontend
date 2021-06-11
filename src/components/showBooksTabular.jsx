@@ -24,7 +24,6 @@ class ShowBooksTabular extends Component {
               <th className="tableHeader" scope="col">
                 Unit Price
               </th>
-              <th className="tableHeader" scope="col"></th>
             </tr>
           </thead>
           <tbody>
@@ -37,9 +36,6 @@ class ShowBooksTabular extends Component {
                   </td>
                   <td>{book.genreId.name}</td>
                   <td>{book.unitPrice}</td>
-                  <td>
-                    <button className="btn btn-success">Add to cart</button>
-                  </td>
                 </tr>
               );
             })}
