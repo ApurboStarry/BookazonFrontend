@@ -19,10 +19,32 @@ async function getBookById(bookId) {
   return book;
 }
 
+async function getBooksSortedByTitle(order) {
+  const { data: books } = await httpService.get(apiEndpoint + "/sortBy/name?order=" + order);
+  return books;
+}
+
+async function getBooksSortedByGenre(order) {
+  const { data: books } = await httpService.get(
+    apiEndpoint + "/sortBy/genre?order=" + order
+  );
+  return books;
+}
+
+async function getBooksSortedByUnitPrice(order) {
+  const { data: books } = await httpService.get(
+    apiEndpoint + "/sortBy/unitPrice?order=" + order
+  );
+  return books;
+}
+
 const defaultExportObj = {
   getNumberOfPages,
   getBooks,
-  getBookById
+  getBookById,
+  getBooksSortedByTitle,
+  getBooksSortedByGenre,
+  getBooksSortedByUnitPrice,
 };
 
 export default defaultExportObj;

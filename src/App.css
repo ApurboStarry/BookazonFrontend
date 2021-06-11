@@ -72,3 +72,7 @@ th {
   border: 1px solid blue;
   margin-bottom: 10px;
 }
+
+.sortEnabledTableHeader {
+  cursor: pointer;
+}
