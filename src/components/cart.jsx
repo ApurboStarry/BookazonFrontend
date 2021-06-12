@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import cartService from "../apiServices/cartService";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 
 class Cart extends Component {
   state = {
@@ -68,9 +68,6 @@ class Cart extends Component {
     const cart = {...this.state};
     cart.books = books;
 
-    const totalPrice = this.calculateTotalPrice(cart);
-    // console.log(cart);
-    // console.log(totalPrice);
     this.setState({ books });
   };
 
@@ -93,7 +90,7 @@ class Cart extends Component {
   handleQuantityUpdate = async (bookInCartId) => {
     const index = this.getBookIndex(bookInCartId);
     const { books } = this.state.cart;
-    const data = await cartService.updateQuantityOfABook(
+    await cartService.updateQuantityOfABook(
       bookInCartId,
       books[index].quantity
     );

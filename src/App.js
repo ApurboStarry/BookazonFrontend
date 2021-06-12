@@ -9,7 +9,6 @@ import auth from "./services/authService";
 
 import NavBarTop from "./components/navbar/navbarTop";
 import NavBarBottom from "./components/navbar/navbarBottom";
-import ProtectedRoute from "./components/common/protectedRoute";
 import Authors from "./components/authors";
 import Genres from "./components/genres";
 import Publishers from "./components/publishers";
