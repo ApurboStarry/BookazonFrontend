@@ -26,6 +26,7 @@ import SearchByAuthor from "./components/searchByAuthor";
 import SubGenres from "./components/subGenres";
 import SearchByTitle from "./components/searchByTitle";
 import AdvancedSearchForm from "./components/advancedSearchForm";
+import PaymentGateway from "./components/paymentMethod";
 class App extends Component {
   state = {};
 
@@ -58,6 +59,7 @@ class App extends Component {
             <Route path="/sellbook" component={SellBook} />
             <Route path="/cart" component={Cart} />
             <Route path="/book" component={Book} />
+            <Route path="/paymentMethod" component={PaymentGateway} />
             <Route path="/advancedSearch" component={AdvancedSearchForm} />
             <Route path="/search/byGenre" component={SearchByGenre} />
             <Route path="/search/byAuthor" component={SearchByAuthor} />

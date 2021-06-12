@@ -62,10 +62,13 @@ th {
   text-align: center;
 }
 
-#displayAParticularBook, #displayGenre, #displayAuthor {
-  margin-left: 50px;
+#displayAParticularBook #displayGenre, #displayAuthor {
+  /* margin-left: 50px;
   margin-right: 50px;
-  margin-top: 20px;
+  margin-top: 20px; */
+
+  width: 50%;
+  margin: 0 auto;
 }
 
 #addAuthor {
@@ -75,4 +78,34 @@ th {
 
 .sortEnabledTableHeader {
   cursor: pointer;
+}
+
+#cart {
+  width: 80%;
+  margin: 0 auto;
+}
+
+#booksInCart {
+  border: 1px solid blue;
+  margin: 10px 0;
+}
+
+.cartQuantityButton {
+  margin-right: 10px;
+  margin-left: 10px;
+}
+
+#cartDetails {
+  width: 60%;
+  padding: 20px;
+}
+
+#cartBookDelete {
+  width: 20%;
+  padding: 30px;
+}
+
+#paymentMethod {
+  width: 80%;
+  margin: 0 auto;
 }
