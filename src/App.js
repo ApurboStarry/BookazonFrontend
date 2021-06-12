@@ -27,6 +27,9 @@ import SubGenres from "./components/subGenres";
 import SearchByTitle from "./components/searchByTitle";
 import AdvancedSearchForm from "./components/advancedSearchForm";
 import PaymentGateway from "./components/paymentMethod";
+import DeliveryType from "./components/deliveryType";
+import MobileBanking from "./components/mobileBanking";
+import ConfirmPurchase from "./components/confirmPurchase";
 class App extends Component {
   state = {};
 
@@ -59,6 +62,9 @@ class App extends Component {
             <Route path="/sellbook" component={SellBook} />
             <Route path="/cart" component={Cart} />
             <Route path="/book" component={Book} />
+            <Route path="/deliveryType" component={DeliveryType} />
+            <Route path="/mobileBanking" component={MobileBanking} />
+            <Route path="/confirmPurchase" component={ConfirmPurchase} />
             <Route path="/paymentMethod" component={PaymentGateway} />
             <Route path="/advancedSearch" component={AdvancedSearchForm} />
             <Route path="/search/byGenre" component={SearchByGenre} />

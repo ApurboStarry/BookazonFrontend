@@ -11,11 +11,20 @@ class PaymentMethod extends Component {
 
   isDisabled = () => {
     return this.state.paymentMethod === "";
-  }
+  };
 
   handleSubmit = (e) => {
     e.preventDefault();
-    console.log(this.state.paymentMethod);
+
+    if (this.state.paymentMethod === "cashOnDelivery") {
+      this.props.history.push(
+        `/confirmPurchase?paymentMetod=cashOnDelivery&deliveryType=homeDelivery`
+      );
+    } else if (this.state.paymentMethod === "mobileBanking") {
+      this.props.history.push("/mobileBanking");
+    } else {
+      this.props.history.push("/creditDebitCard");
+    }
   };
 
   render() {
@@ -24,7 +33,7 @@ class PaymentMethod extends Component {
         <form onSubmit={this.handleSubmit}>
           <div>
             <h3 style={{ marginTop: 10 }}>Choose payment method</h3>
-            <div class="form-check" onChange={this.handleChange}>
+            <div className="form-check" onChange={this.handleChange}>
               <Radio
                 name="payment-method"
                 id="cashOnDelivery"
@@ -34,9 +43,9 @@ class PaymentMethod extends Component {
               />
               <Radio
                 name="payment-method"
+                label="Mobile banking"
                 id="mobileBanking"
                 value="mobileBanking"
-                label="Mobile banking"
                 onChange={this.handleChange}
               />
               <Radio
@@ -48,7 +57,9 @@ class PaymentMethod extends Component {
               />
             </div>
             <div style={{ marginTop: 10 }}>
-              <button disabled={this.isDisabled()} className="btn btn-primary">Next</button>
+              <button disabled={this.isDisabled()} className="btn btn-primary">
+                Next
+              </button>
             </div>
           </div>
         </form>

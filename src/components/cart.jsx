@@ -9,11 +9,35 @@ class Cart extends Component {
       ownerId: "",
       _id: "",
     },
+    totalPrice: 0,
   };
+
+  getTotalPrice = () => {
+    const { books } = this.state.cart;
+    let totalPrice = 0;
+
+    for (let i = 0; i < books.length; i++) {
+      totalPrice += books[i].totalAmount;
+    }
+
+    return totalPrice;
+  };
+
+  calculateTotalPrice = (cart) => {
+    const { books } = cart;
+    let totalPrice = 0;
+
+    for (let i = 0; i < books.length; i++) {
+      totalPrice += books[i].quantity * books[i].unitPrice;
+    }
+
+    return totalPrice;
+  }
 
   async componentDidMount() {
     const cart = await cartService.getAllBooksInCart();
-    this.setState({ cart });
+    const totalPrice = this.calculateTotalPrice(cart);
+    this.setState({ cart, totalPrice });
   }
 
   getBookIndex = (bookId) => {
@@ -41,6 +65,12 @@ class Cart extends Component {
 
     books[index].quantity += 1;
 
+    const cart = {...this.state};
+    cart.books = books;
+
+    const totalPrice = this.calculateTotalPrice(cart);
+    // console.log(cart);
+    // console.log(totalPrice);
     this.setState({ books });
   };
 
@@ -67,7 +97,11 @@ class Cart extends Component {
       bookInCartId,
       books[index].quantity
     );
+
     toast.success("Updated!");
+
+    const totalPrice = this.calculateTotalPrice(this.state.cart);
+    this.setState({ totalPrice });
   };
 
   handleBookDelete = async (bookInCartId) => {
@@ -80,20 +114,11 @@ class Cart extends Component {
     this.setState({ books });
   };
 
-  getTotalPrice = () => {
-    const { books } = this.state.cart;
-    let totalPrice = 0;
-
-    for (let i = 0; i < books.length; i++) {
-      totalPrice += books[i].totalAmount;
-    }
-
-    return totalPrice;
-  };
-
   handleProceedToPayment = () => {
-    this.props.history.push("/paymentMethod");
-  }
+    this.props.history.push(
+      "/deliveryType?totalAmount=" + this.getTotalPrice()
+    );
+  };
 
   render() {
     if (this.state.cart.books.length === 0) {
@@ -148,7 +173,7 @@ class Cart extends Component {
           );
         })}
 
-        <h5>Total Price: {this.getTotalPrice()}</h5>
+        <h5>Total Price: {this.state.totalPrice}</h5>
         <button
           onClick={this.handleProceedToPayment}
           className="btn btn-warning"

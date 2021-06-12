@@ -5,13 +5,17 @@ const Radio = ({ name, id, value, label }) => {
     <div>
       <input
         style={{ cursor: "pointer" }}
-        class="form-check-input"
+        className="form-check-input"
         type="radio"
         name={name}
         id={id}
         value={value}
       />
-      <label style={{ cursor: "pointer" }} class="form-check-label" for={id}>
+      <label
+        style={{ cursor: "pointer" }}
+        className="form-check-label"
+        htmlFor={id}
+      >
         {label}
       </label>
     </div>
