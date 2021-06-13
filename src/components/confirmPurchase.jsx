@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import cartService from "../apiServices/cartService";
+import buyService from "../apiServices/buyService";
+import { toast } from "react-toastify";
 
 class ConfirmPurchase extends Component {
   state = {
@@ -43,13 +45,29 @@ class ConfirmPurchase extends Component {
     return totalPrice;
   };
 
-  handleConfirmOrder = () => {
+  getOrderPrice = () => {
+    if(this.state.deliveryType === "Home Delivery") {
+      return this.getTotalPrice() + 10;
+    } else {
+      return this.getTotalPrice();
+    }
+  }
 
+  handleConfirmOrder = async () => {
+    await buyService.buy({
+      totalAmount: this.getOrderPrice(),
+      paymentMethod: this.state.paymentMethod,
+      deliveryType: this.state.deliveryType
+    });
+
+    toast.success("Order confirmed!");
+    this.props.history.push("/");
   }
 
   render() {
     return (
       <div id="cart">
+        <h3 style={{ marginTop: 10 }}>Order Details</h3>
         {this.state.cart.books.map((book) => {
           return (
             <div id="booksInCart" key={book._id}>
@@ -67,7 +85,7 @@ class ConfirmPurchase extends Component {
 
         <p>Delivery Type: {this.state.deliveryType}</p>
         <p>Payment Method: {this.state.paymentMethod}</p>
-        <p>Total Price: {this.getTotalPrice()}</p>
+        <p>Total Price: {this.getOrderPrice()}</p>
         <button onClick={this.handleConfirmOrder} className="btn btn-success">
           Confirm Order
         </button>

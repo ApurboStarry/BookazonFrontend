@@ -24,6 +24,8 @@ class Cart extends Component {
   };
 
   calculateTotalPrice = (cart) => {
+    if(!cart) return 0;
+
     const { books } = cart;
     let totalPrice = 0;
 
@@ -118,8 +120,8 @@ class Cart extends Component {
   };
 
   render() {
-    if (this.state.cart.books.length === 0) {
-      return <h3>Nothing in the cart right now</h3>;
+    if (!this.state.cart || this.state.cart.books.length === 0) {
+      return <h3 style={{width: "80%", margin: "0 auto"}}>Nothing in the cart right now</h3>;
     }
 
     return (
