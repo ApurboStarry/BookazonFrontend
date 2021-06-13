@@ -62,7 +62,7 @@ th {
   text-align: center;
 }
 
-#displayAParticularBook #displayGenre, #displayAuthor {
+#displayAParticularBook, #displayGenre, #displayAuthor {
   /* margin-left: 50px;
   margin-right: 50px;
   margin-top: 20px; */

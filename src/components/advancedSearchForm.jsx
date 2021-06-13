@@ -2,15 +2,26 @@ import React, { Component } from "react";
 import Input from "./common/input";
 import ShowBooksTabular from "./showBooksTabular";
 import searchService from "../apiServices/searchService";
+import genreService from "../apiServices/genreService";
 
 class AdvancedSearchForm extends Component {
   state = {
     data: { name: "", author: "", genre: "", minPrice: 0, maxPrice: 10000 },
     submitted: false,
-    books: []
+    books: [],
+    genres: [],
   };
 
-  componentDidMount() {
+  async getGenres() {
+    const genres = await genreService.getAllLeafGenres();
+    console.log(genres);
+
+    return genres;
+  }
+
+  async componentDidMount() {
+    const genres = await this.getGenres();
+
     const data = {
       name: "",
       author: "",
@@ -19,9 +30,8 @@ class AdvancedSearchForm extends Component {
       maxPrice: 10000,
     };
 
-    this.setState({ data, submitted: false, books: [] });
+    this.setState({ data, submitted: false, books: [], genres });
   }
-  
 
   handleChange = ({ currentTarget: input }) => {
     const data = { ...this.state.data };
@@ -37,8 +47,8 @@ class AdvancedSearchForm extends Component {
   };
 
   render() {
-    if(this.state.submitted === true) {
-      return (<ShowBooksTabular books={this.state.books} />);
+    if (this.state.submitted === true) {
+      return <ShowBooksTabular books={this.state.books} />;
     }
 
     const { data } = this.state;
@@ -59,12 +69,31 @@ class AdvancedSearchForm extends Component {
             label="Author"
             onChange={this.handleChange}
           />
-          <Input
-            name="genre"
-            value={data.genre}
-            label="Genre"
-            onChange={this.handleChange}
-          />
+          <div className="form-group">
+            <label
+              style={{ paddingLeft: 5 }}
+              className="form-label"
+              htmlFor="genreId"
+            >
+              Genre
+            </label>
+            <select
+              name="genre"
+              onChange={this.handleChange}
+              id="genreId"
+              className="form-select mb-3"
+              value={this.state.data.genreId}
+            >
+              <option value=""></option>
+              {this.state.genres.map((genre) => {
+                return (
+                  <option key={genre._id} value={genre.name}>
+                    {genre.name}
+                  </option>
+                );
+              })}
+            </select>
+          </div>
           <Input
             name="minPrice"
             value={data.minPrice}
@@ -78,9 +107,7 @@ class AdvancedSearchForm extends Component {
             onChange={this.handleChange}
           />
           <div style={{ textAlign: "center" }}>
-            <button className="btn btn-primary">
-              Search
-            </button>
+            <button className="btn btn-primary">Search</button>
           </div>
         </form>
       </div>
