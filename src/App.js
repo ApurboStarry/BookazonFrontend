@@ -29,6 +29,7 @@ import PaymentGateway from "./components/paymentMethod";
 import DeliveryType from "./components/deliveryType";
 import MobileBanking from "./components/mobileBanking";
 import ConfirmPurchase from "./components/confirmPurchase";
+import TransactionHistory from "./components/transactionHistory";
 class App extends Component {
   state = {};
 
@@ -62,6 +63,7 @@ class App extends Component {
             <Route path="/cart" component={Cart} />
             <Route path="/book" component={Book} />
             <Route path="/deliveryType" component={DeliveryType} />
+            <Route path="/transactionHistory" component={TransactionHistory} />
             <Route path="/mobileBanking" component={MobileBanking} />
             <Route path="/confirmPurchase" component={ConfirmPurchase} />
             <Route path="/paymentMethod" component={PaymentGateway} />

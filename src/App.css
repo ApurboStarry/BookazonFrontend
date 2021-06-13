@@ -105,7 +105,23 @@ th {
   padding: 30px;
 }
 
-#paymentMethod, #deliveryType, #chooseMoblieBankingMethod {
+#paymentMethod, #deliveryType, #chooseMoblieBankingMethod, #showProfile {
   width: 80%;
   margin: 0 auto;
+}
+
+#showTransactionHistory {
+  width: 80%;
+  margin: 0 auto;
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+#transactionList {
+  border: 1px solid blue;
+  margin-bottom: 10px;
+}
+
+#booksInTransaction {
+  border: 1px solid red;
 }
