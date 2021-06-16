@@ -6,7 +6,14 @@ import genreService from "../apiServices/genreService";
 
 class AdvancedSearchForm extends Component {
   state = {
-    data: { name: "", author: "", genre: "", minPrice: 0, maxPrice: 10000 },
+    data: {
+      name: "",
+      author: "",
+      genre: "",
+      tags: [""],
+      minPrice: 0,
+      maxPrice: 10000,
+    },
     submitted: false,
     books: [],
     genres: [],
@@ -26,6 +33,7 @@ class AdvancedSearchForm extends Component {
       name: "",
       author: "",
       genre: "",
+      tags: [""],
       minPrice: 0,
       maxPrice: 10000,
     };
@@ -41,9 +49,36 @@ class AdvancedSearchForm extends Component {
 
   handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("inside hadlesubmit");
     const books = await searchService.advancedSearch(this.state.data);
     console.log(books);
     this.setState({ books, submitted: true });
+  };
+
+  handleTagChange = ({ currentTarget: input }) => {
+    const data = { ...this.state.data };
+
+    const index = parseInt(input.name);
+    const value = input.value;
+    data.tags[index] = value;
+
+    this.setState({ data });
+  };
+
+  handleTagDelete = (index) => {
+    const data = { ...this.state.data };
+    data.tags.splice(index, 1);
+
+    this.setState({ data });
+  };
+
+  handleAddTagButton = (e) => {
+    e.preventDefault();
+    const data = { ...this.state.data };
+    data.tags.push("");
+    console.log("Inside handleAddTagButton");
+
+    this.setState({ data });
   };
 
   render() {
@@ -94,6 +129,50 @@ class AdvancedSearchForm extends Component {
               })}
             </select>
           </div>
+
+          <div id="addAuthor">
+            <label
+              style={{ paddingLeft: 5 }}
+              htmlFor={"tags"}
+              className="form-label"
+            >
+              Tags
+            </label>
+            <div
+              style={{ marginLeft: 20, marginRight: 20, marginBottom: 20 }}
+              className="authorsInput"
+            >
+              {this.state.data.tags.map((tag, index) => {
+                return (
+                  <div key={index} className="d-flex flex-row mb-3">
+                    <input
+                      name={index}
+                      value={this.state.data.tags[index]}
+                      onChange={this.handleTagChange}
+                      className="form-control"
+                    />
+                    {index > 0 && (
+                      <span style={{ cursor: "pointer", padding: 10 }}>
+                        <i
+                          onClick={() => this.handleTagDelete(index)}
+                          className="fa fa-trash"
+                          aria-hidden="true"
+                        ></i>
+                      </span>
+                    )}
+                  </div>
+                );
+              })}
+              <button
+                style={{ marginTop: 10 }}
+                onClick={this.handleAddTagButton}
+                className="btn btn-success"
+              >
+                Add tag
+              </button>
+            </div>
+          </div>
+
           <Input
             name="minPrice"
             value={data.minPrice}

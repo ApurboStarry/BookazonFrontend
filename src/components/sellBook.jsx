@@ -8,7 +8,14 @@ const apiEndpoint = apiUrl + "/books";
 
 class SellBook extends Component {
   state = {
-    data: { name: "", quantity: "", unitPrice: "", genreId: "", authors: [""] },
+    data: {
+      name: "",
+      quantity: 0,
+      unitPrice: 1,
+      genreId: "",
+      authors: [""],
+      tags: [""],
+    },
     errors: {},
     genres: [],
   };
@@ -29,6 +36,7 @@ class SellBook extends Component {
       unitPrice: "",
       genreId: genres[0]._id,
       authors: [""],
+      tags: [""],
     };
     this.setState({ data, genres });
   }
@@ -77,7 +85,7 @@ class SellBook extends Component {
 
   validateProperty = ({ name, value }) => {
     if (name === "name") {
-      if (value.trim() === "") return "Name is required";
+      if (value.trim() === "") return "Title is required";
     }
     if (name === "quantity") {
       if (isNaN(value)) return "Quantity must be a number";
@@ -110,11 +118,26 @@ class SellBook extends Component {
     this.setState({ data });
   };
 
+  handleTagChange = ({ currentTarget: input }) => {
+    const data = { ...this.state.data };
+
+    const index = parseInt(input.name);
+    const value = input.value;
+    data.tags[index] = value;
+
+    this.setState({ data });
+  };
+
   handleAddAuthor = () => {
     const data = { ...this.state.data };
     data.authors.push("");
 
-    console.log(data);
+    this.setState({ data });
+  };
+
+  handleAddTag = () => {
+    const data = { ...this.state.data };
+    data.tags.push("");
 
     this.setState({ data });
   };
@@ -122,6 +145,13 @@ class SellBook extends Component {
   handleAuthorDelete = (index) => {
     const data = { ...this.state.data };
     data.authors.splice(index, 1);
+
+    this.setState({ data });
+  };
+
+  handleTagDelete = (index) => {
+    const data = { ...this.state.data };
+    data.tags.splice(index, 1);
 
     this.setState({ data });
   };
@@ -208,6 +238,49 @@ class SellBook extends Component {
                 );
               })}
             </select>
+          </div>
+
+          <div id="addAuthor">
+            <label
+              style={{ paddingLeft: 5 }}
+              htmlFor={"tags"}
+              className="form-label"
+            >
+              Tags
+            </label>
+            <div
+              style={{ marginLeft: 20, marginRight: 20, marginBottom: 20 }}
+              className="authorsInput"
+            >
+              {this.state.data.tags.map((tag, index) => {
+                return (
+                  <div key={index} className="d-flex flex-row mb-3">
+                    <input
+                      name={index}
+                      value={this.state.data.tags[index]}
+                      onChange={this.handleTagChange}
+                      className="form-control"
+                    />
+                    {index > 0 && (
+                      <span style={{ cursor: "pointer", padding: 10 }}>
+                        <i
+                          onClick={() => this.handleTagDelete(index)}
+                          className="fa fa-trash"
+                          aria-hidden="true"
+                        ></i>
+                      </span>
+                    )}
+                  </div>
+                );
+              })}
+              <button
+                style={{ marginTop: 10 }}
+                onClick={this.handleAddTag}
+                className="btn btn-success"
+              >
+                Add Tag
+              </button>
+            </div>
           </div>
 
           <Input
