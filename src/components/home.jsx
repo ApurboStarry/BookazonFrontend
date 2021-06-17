@@ -63,6 +63,17 @@ class Home extends Component {
     );
   };
 
+  getGenresOfBook = (book) => {
+    let genres = "";
+    genres += book.genres[0].name;
+
+    for(let i = 1; i < book.genres.length; i++) {
+      genres += ", " + book.genres[i].name;
+    }
+
+    return genres;
+  }
+
   render() {
     return (
       <div>
@@ -101,7 +112,7 @@ class Home extends Component {
                     <td>
                       <Link to={bookLink}>{book.name}</Link>
                     </td>
-                    <td>{book.genreId.name}</td>
+                    <td>{this.getGenresOfBook(book)}</td>
                     <td>{book.unitPrice}</td>
                   </tr>
                 );

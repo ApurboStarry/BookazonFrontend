@@ -2,11 +2,12 @@ import React, { Component } from 'react';
 import { Link } from "react-router-dom";
 
 class ShowBooksTabular extends Component {
-  state = {  }
-  render() { 
-    const { books } = this.props;
+  state = {};
 
-    if(books.length === 0) {
+  render() {
+    const { books, getGenresOfBook } = this.props;
+
+    if (books.length === 0) {
       return <h3>No books to show</h3>;
     }
 
@@ -34,7 +35,7 @@ class ShowBooksTabular extends Component {
                   <td>
                     <Link to={bookLink}>{book.name}</Link>
                   </td>
-                  <td>{book.genreId.name}</td>
+                  <td>{() => getGenresOfBook(book)}</td>
                   <td>{book.unitPrice}</td>
                 </tr>
               );

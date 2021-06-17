@@ -12,33 +12,52 @@ class SellBook extends Component {
       name: "",
       quantity: 0,
       unitPrice: 1,
-      genreId: "",
+      genres: [{ _id: "1", name: "" }],
       authors: [""],
       tags: [""],
     },
     errors: {},
-    genres: [],
+    availableGenres: [[{ _id: "1", name: "" }]],
+    selectedGenres: [],
   };
 
-  async getGenres() {
-    const genres = await genreService.getAllLeafGenres();
+  handleAddNewGenre = async () => {
+    const allGenres = await this.getAllNonParentGenres();
+    const { availableGenres } = this.state;
+    console.log("availableGenres", availableGenres);
+    availableGenres.push(allGenres);
+
+    const data = { ...this.state.data };
+    data.genres.push(availableGenres[0][0]._id);
+
+    this.setState({ data, availableGenres });
+  };
+
+  async getAllNonParentGenres() {
+    const genres = await genreService.getAllNonParentGenres();
+    console.log("length", this.state.availableGenres.length);
+    genres.splice(0, 0, { _id: this.state.availableGenres.length+1, name: "" });
     console.log(genres);
 
     return genres;
   }
 
   async componentDidMount() {
-    const genres = await this.getGenres();
+    const genres = [];
+    const allGenres = await this.getAllNonParentGenres();
+    genres.push(allGenres);
+
+    const selectedGenres = [];
 
     const data = {
       name: "",
       quantity: "",
       unitPrice: "",
-      genreId: genres[0]._id,
+      genres: [genres[0][0]._id],
       authors: [""],
       tags: [""],
     };
-    this.setState({ data, genres });
+    this.setState({ data, availableGenres: genres, selectedGenres });
   }
 
   validate = () => {
@@ -70,9 +89,22 @@ class SellBook extends Component {
     this.doSubmit();
   };
 
+  getFormattedData = () => {
+    const genres = [];
+    for(let i = 0; i < this.state.data.genres.length; i++) {
+      genres.push(this.state.data.genres[i]._id);
+    }
+
+    console.log(genres);
+
+    const data = {...this.state.data};
+    data.genres = genres;
+    return data;
+  }
+
   doSubmit = async () => {
     try {
-      await httpService.post(apiEndpoint, this.state.data);
+      await httpService.post(apiEndpoint, this.getFormattedData());
       this.props.history.push("/");
     } catch (ex) {
       if (ex.response && ex.response.status === 400) {
@@ -106,6 +138,66 @@ class SellBook extends Component {
     const data = { ...this.state.data };
     data[input.name] = input.value;
     this.setState({ data, errors });
+  };
+
+  getGenreName = (index, genreId) => {
+    console.log("bull", index);
+    for (let i = 0; i < this.state.availableGenres.length; i++) {
+      if (this.state.availableGenres[index][i]._id === genreId)
+        return this.state.availableGenres[index][i].name;
+    }
+  };
+
+  getSubgenres = async (genreId) => {
+    const genres = await genreService.getSubgenres(genreId);
+    return genres;
+  };
+
+  getFromAvailableGenres = (genreIndex, genreId) => {
+    const { availableGenres } = this.state;
+    console.log("inside getFromAvailableGenres", genreIndex, availableGenres);
+    for(let i = 0; i < availableGenres[genreIndex].length; i++) {
+      if(availableGenres[genreIndex][i]._id === genreId) return availableGenres[genreIndex][i];
+    }
+  }
+
+  handleGenreChange = async ({ currentTarget: input }) => {
+    const { data } = this.state;
+    
+    if(input.value !== "") {
+      const genreIndex = input.name;
+      const genreId = input.value;
+      data.genres[genreIndex] = this.getFromAvailableGenres(
+        genreIndex,
+        genreId
+      );
+
+      const children = await genreService.getSubgenres(genreId);
+      if(children.length > 0) {
+        const { availableGenres } = this.state;
+        availableGenres[genreIndex] = children;
+  
+        this.setState({ data, availableGenres });
+      } else {
+        this.setState({ data });
+      }
+    }
+  };
+
+  printSelectedGenres = () => {
+    let genresToBePrinted = "";
+    const { selectedGenres } = this.state;
+    if (selectedGenres.length === 0) return genresToBePrinted;
+    else if (selectedGenres.length === 1) return selectedGenres[0];
+    else {
+      genresToBePrinted += selectedGenres[0];
+      for (let i = 1; i < selectedGenres.length; i++) {
+        genresToBePrinted += " -> ";
+        genresToBePrinted += selectedGenres[i];
+      }
+
+      return genresToBePrinted;
+    }
   };
 
   handleAuthorChange = ({ currentTarget: input }) => {
@@ -157,7 +249,7 @@ class SellBook extends Component {
   };
 
   render() {
-    const { data, errors } = this.state;
+    const { data, errors, availableGenres } = this.state;
 
     return (
       <div style={{ paddingBottom: 50 }} className="formStyle">
@@ -214,30 +306,43 @@ class SellBook extends Component {
             </div>
           </div>
 
-          <div className="form-group">
+          <div id="addBookGenres">
             <label
               style={{ paddingLeft: 5 }}
               className="form-label"
-              htmlFor="genreId"
+              htmlFor="genres"
             >
-              Genre
+              Genres
             </label>
-            <select
-              name="genreId"
-              onChange={this.handleChange}
-              id="genreId"
-              className="form-select mb-3"
-              value={this.state.data.genreId}
-            >
-              <option value="0"></option>
-              {this.state.genres.map((genre) => {
+            <div style={{ marginLeft: 20, marginRight: 20, marginBottom: 20 }}>
+              {availableGenres.map((genres, index) => {
                 return (
-                  <option key={genre._id} value={genre._id}>
-                    {genre.name}
-                  </option>
+                  <select
+                    value={this.state.data.genres[index]._id}
+                    onChange={this.handleGenreChange}
+                    key={this.state.data.genres[index]._id}
+                    style={{ marginBottom: 20 }}
+                    className="form-select"
+                    name={index}
+                  >
+                    {availableGenres[index].map((genre, index) => {
+                      return (
+                        <option value={genre._id} key={genre._id}>
+                          {genre.name}
+                        </option>
+                      );
+                    })}
+                  </select>
                 );
               })}
-            </select>
+
+              <button
+                onClick={this.handleAddNewGenre}
+                className="btn btn-success"
+              >
+                Add genre
+              </button>
+            </div>
           </div>
 
           <div id="addAuthor">

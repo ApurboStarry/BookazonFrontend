@@ -76,6 +76,11 @@ th {
   margin-bottom: 10px;
 }
 
+#addBookGenres {
+  border: 1px solid blue;
+  margin-bottom: 10px;
+}
+
 .sortEnabledTableHeader {
   cursor: pointer;
 }

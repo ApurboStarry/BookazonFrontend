@@ -9,37 +9,108 @@ class AdvancedSearchForm extends Component {
     data: {
       name: "",
       author: "",
-      genre: "",
+      genres: [{ _id: "1", name: "" }],
       tags: [""],
       minPrice: 0,
       maxPrice: 10000,
     },
     submitted: false,
     books: [],
-    genres: [],
+    availableGenres: [[{ _id: "1", name: "" }]],
   };
 
-  async getGenres() {
-    const genres = await genreService.getAllLeafGenres();
+  handleAddNewGenre = async (e) => {
+    e.preventDefault();
+
+    const allGenres = await this.getAllNonParentGenres();
+    const { availableGenres } = this.state;
+    console.log("availableGenres", availableGenres);
+    availableGenres.push(allGenres);
+
+    const data = { ...this.state.data };
+    data.genres.push(availableGenres[0][0]._id);
+
+    this.setState({ data, availableGenres });
+  };
+
+  async getAllNonParentGenres() {
+    const genres = await genreService.getAllNonParentGenres();
+    console.log("length", this.state.availableGenres.length);
+    genres.splice(0, 0, {
+      _id: this.state.availableGenres.length + 1,
+      name: "",
+    });
     console.log(genres);
 
     return genres;
   }
 
   async componentDidMount() {
-    const genres = await this.getGenres();
+    const genres = [];
+    const allGenres = await this.getAllNonParentGenres();
+    genres.push(allGenres);
 
     const data = {
       name: "",
       author: "",
-      genre: "",
+      genres: [genres[0][0]._id],
       tags: [""],
       minPrice: 0,
       maxPrice: 10000,
     };
 
-    this.setState({ data, submitted: false, books: [], genres });
+    this.setState({
+      data,
+      submitted: false,
+      books: [],
+      availableGenres: genres,
+    });
   }
+
+  getGenreName = (index, genreId) => {
+    console.log("bull", index);
+    for (let i = 0; i < this.state.availableGenres.length; i++) {
+      if (this.state.availableGenres[index][i]._id === genreId)
+        return this.state.availableGenres[index][i].name;
+    }
+  };
+
+  getSubgenres = async (genreId) => {
+    const genres = await genreService.getSubgenres(genreId);
+    return genres;
+  };
+
+  getFromAvailableGenres = (genreIndex, genreId) => {
+    const { availableGenres } = this.state;
+    console.log("inside getFromAvailableGenres", genreIndex, availableGenres);
+    for (let i = 0; i < availableGenres[genreIndex].length; i++) {
+      if (availableGenres[genreIndex][i]._id === genreId)
+        return availableGenres[genreIndex][i];
+    }
+  };
+
+  handleGenreChange = async ({ currentTarget: input }) => {
+    const { data } = this.state;
+
+    if (input.value !== "") {
+      const genreIndex = input.name;
+      const genreId = input.value;
+      data.genres[genreIndex] = this.getFromAvailableGenres(
+        genreIndex,
+        genreId
+      );
+
+      const children = await genreService.getSubgenres(genreId);
+      if (children.length > 0) {
+        const { availableGenres } = this.state;
+        availableGenres[genreIndex] = children;
+
+        this.setState({ data, availableGenres });
+      } else {
+        this.setState({ data });
+      }
+    }
+  };
 
   handleChange = ({ currentTarget: input }) => {
     const data = { ...this.state.data };
@@ -47,10 +118,21 @@ class AdvancedSearchForm extends Component {
     this.setState({ data });
   };
 
+  getFormattedData = () => {
+    const genres = [];
+    for (let i = 0; i < this.state.data.genres.length; i++) {
+      genres.push(this.state.data.genres[i]._id);
+    }
+
+    const data = { ...this.state.data };
+    data.genres = genres;
+    return data;
+  };
+
   handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("inside hadlesubmit");
-    const books = await searchService.advancedSearch(this.state.data);
+    console.log("inside hadlesubmit", this.getFormattedData());
+    const books = await searchService.advancedSearch(this.getFormattedData());
     console.log(books);
     this.setState({ books, submitted: true });
   };
@@ -83,10 +165,14 @@ class AdvancedSearchForm extends Component {
 
   render() {
     if (this.state.submitted === true) {
-      return <ShowBooksTabular books={this.state.books} />;
+      return (
+        <ShowBooksTabular
+          books={this.state.books}
+        />
+      );
     }
 
-    const { data } = this.state;
+    const { data, availableGenres } = this.state;
 
     return (
       <div style={{ paddingBottom: 50 }} className="formStyle">
@@ -104,30 +190,43 @@ class AdvancedSearchForm extends Component {
             label="Author"
             onChange={this.handleChange}
           />
-          <div className="form-group">
+          <div id="addBookGenres">
             <label
               style={{ paddingLeft: 5 }}
               className="form-label"
-              htmlFor="genreId"
+              htmlFor="genres"
             >
-              Genre
+              Genres
             </label>
-            <select
-              name="genre"
-              onChange={this.handleChange}
-              id="genreId"
-              className="form-select mb-3"
-              value={this.state.data.genreId}
-            >
-              <option value=""></option>
-              {this.state.genres.map((genre) => {
+            <div style={{ marginLeft: 20, marginRight: 20, marginBottom: 20 }}>
+              {availableGenres.map((genres, index) => {
                 return (
-                  <option key={genre._id} value={genre.name}>
-                    {genre.name}
-                  </option>
+                  <select
+                    value={this.state.data.genres[index]._id}
+                    onChange={this.handleGenreChange}
+                    key={this.state.data.genres[index]._id}
+                    style={{ marginBottom: 20 }}
+                    className="form-select"
+                    name={index}
+                  >
+                    {availableGenres[index].map((genre, index) => {
+                      return (
+                        <option value={genre._id} key={genre._id}>
+                          {genre.name}
+                        </option>
+                      );
+                    })}
+                  </select>
                 );
               })}
-            </select>
+
+              <button
+                onClick={this.handleAddNewGenre}
+                className="btn btn-success"
+              >
+                Add genre
+              </button>
+            </div>
           </div>
 
           <div id="addAuthor">
