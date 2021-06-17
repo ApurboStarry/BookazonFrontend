@@ -176,6 +176,7 @@ class SellBook extends Component {
       if(children.length > 0) {
         const { availableGenres } = this.state;
         availableGenres[genreIndex] = children;
+        data.genres[genreIndex] = children[0];
   
         this.setState({ data, availableGenres });
       } else {
