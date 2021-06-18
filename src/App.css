@@ -130,3 +130,8 @@ th {
 #booksInTransaction {
   border: 1px solid red;
 }
+
+#inputLocation {
+  border: 1px solid blue;
+  margin-bottom: 20;
+}

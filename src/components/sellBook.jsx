@@ -6,6 +6,18 @@ import genreService from "../apiServices/genreService";
 
 const apiEndpoint = apiUrl + "/books";
 
+// function success(pos) {
+//   var crd = pos.coords;
+
+//   console.log("Your current position is:");
+//   console.log(`Latitude : ${crd.latitude}`);
+//   console.log(`Longitude: ${crd.longitude}`);
+//   console.log(`More or less ${crd.accuracy} meters.`);
+// }
+
+// function errors(err) {
+//   console.warn(`ERROR(${err.code}): ${err.message}`);
+// }
 class SellBook extends Component {
   state = {
     data: {
@@ -15,6 +27,10 @@ class SellBook extends Component {
       genres: [{ _id: "1", name: "" }],
       authors: [""],
       tags: [""],
+      location: {
+        latitude: 0.0,
+        longitude: 0.0,
+      },
     },
     errors: {},
     availableGenres: [[{ _id: "1", name: "" }]],
@@ -36,7 +52,10 @@ class SellBook extends Component {
   async getAllNonParentGenres() {
     const genres = await genreService.getAllNonParentGenres();
     console.log("length", this.state.availableGenres.length);
-    genres.splice(0, 0, { _id: this.state.availableGenres.length+1, name: "" });
+    genres.splice(0, 0, {
+      _id: this.state.availableGenres.length + 1,
+      name: "",
+    });
     console.log(genres);
 
     return genres;
@@ -56,6 +75,10 @@ class SellBook extends Component {
       genres: [genres[0][0]._id],
       authors: [""],
       tags: [""],
+      location: {
+        latitude: 0.0,
+        longitude: 0.0,
+      },
     };
     this.setState({ data, availableGenres: genres, selectedGenres });
   }
@@ -91,16 +114,19 @@ class SellBook extends Component {
 
   getFormattedData = () => {
     const genres = [];
-    for(let i = 0; i < this.state.data.genres.length; i++) {
+    for (let i = 0; i < this.state.data.genres.length; i++) {
       genres.push(this.state.data.genres[i]._id);
     }
 
-    console.log(genres);
-
-    const data = {...this.state.data};
+    const data = { ...this.state.data };
     data.genres = genres;
+
+    if(data.tags.length === 1 && data.tags[0] === "") {
+      data.tags = [];
+    }
+
     return data;
-  }
+  };
 
   doSubmit = async () => {
     try {
@@ -156,15 +182,16 @@ class SellBook extends Component {
   getFromAvailableGenres = (genreIndex, genreId) => {
     const { availableGenres } = this.state;
     console.log("inside getFromAvailableGenres", genreIndex, availableGenres);
-    for(let i = 0; i < availableGenres[genreIndex].length; i++) {
-      if(availableGenres[genreIndex][i]._id === genreId) return availableGenres[genreIndex][i];
+    for (let i = 0; i < availableGenres[genreIndex].length; i++) {
+      if (availableGenres[genreIndex][i]._id === genreId)
+        return availableGenres[genreIndex][i];
     }
-  }
+  };
 
   handleGenreChange = async ({ currentTarget: input }) => {
     const { data } = this.state;
-    
-    if(input.value !== "") {
+
+    if (input.value !== "") {
       const genreIndex = input.name;
       const genreId = input.value;
       data.genres[genreIndex] = this.getFromAvailableGenres(
@@ -173,11 +200,11 @@ class SellBook extends Component {
       );
 
       const children = await genreService.getSubgenres(genreId);
-      if(children.length > 0) {
+      if (children.length > 0) {
         const { availableGenres } = this.state;
         availableGenres[genreIndex] = children;
         data.genres[genreIndex] = children[0];
-  
+
         this.setState({ data, availableGenres });
       } else {
         this.setState({ data });
@@ -245,6 +272,60 @@ class SellBook extends Component {
   handleTagDelete = (index) => {
     const data = { ...this.state.data };
     data.tags.splice(index, 1);
+
+    this.setState({ data });
+  };
+
+  handleUseCurrentLocation = async (e) => {
+    e.preventDefault();
+    
+    if (navigator.geolocation) {
+      const options = {
+        enableHighAccuracy: true,
+        timeout: 5000,
+        maximumAge: 0,
+      };
+
+      const result = await navigator.permissions
+        .query({ name: "geolocation" });
+      
+      if(result.state === "granted") {
+        navigator.geolocation.getCurrentPosition(this.success);
+      } else if(result.state === "prompt") {
+        navigator.geolocation.getCurrentPosition(this.success, this.errors, options);
+      } else {
+        alert("You have denied to access your location. Type your location manually");
+      }
+    } else {
+      alert(
+        "Cannot get your location from the browser. Enter your location manually"
+      );
+    }
+  };
+
+  errors = (err) => {
+    console.warn(`ERROR(${err.code}): ${err.message}`);
+  }
+
+  success = (pos) => {
+    var coordinate = pos.coords;
+
+    // console.log("Your current position is:");
+    // console.log(`Latitude : ${coordinate.latitude}`);
+    // console.log(`Longitude: ${coordinate.longitude}`);
+    // console.log(`More or less ${coordinate.accuracy} meters.`);
+
+    const { data } = this.state;
+
+    data.location.latitude = coordinate.latitude;
+    data.location.longitude = coordinate.longitude;
+
+    this.setState({ data });
+  }
+
+  handleLocationChange = ({ currentTarget: input }) => {
+    const { data } = this.state;
+    data.location[input.name] = input.value;
 
     this.setState({ data });
   };
@@ -404,7 +485,40 @@ class SellBook extends Component {
             error={errors.unitPrice}
           />
 
-          <div style={{ textAlign: "center" }}>
+          <div id="inputLocation">
+            <label
+              style={{ paddingLeft: 5, display: "block" }}
+              htmlFor={"location"}
+              className="form-label"
+            >
+              Enter your location
+            </label>
+
+            <div style={{ marginLeft: 20, marginRight: 20, marginBottom: 20 }}>
+              <button
+                style={{ marginBottom: 20 }}
+                onClick={this.handleUseCurrentLocation}
+                className="btn btn-warning"
+              >
+                Use current location
+              </button>
+              <p style={{ color: "blue" }}>Or manually type location</p>
+              <Input
+                name="latitude"
+                value={this.state.data.location.latitude}
+                onChange={this.handleLocationChange}
+                label="Latitude"
+              />
+              <Input
+                name="longitude"
+                value={this.state.data.location.longitude}
+                onChange={this.handleLocationChange}
+                label="Longitude"
+              />
+            </div>
+          </div>
+
+          <div style={{ textAlign: "center", marginTop: 20 }}>
             <button disabled={this.validate()} className="btn btn-primary">
               Add Book
             </button>

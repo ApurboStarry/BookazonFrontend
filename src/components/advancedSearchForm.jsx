@@ -53,7 +53,7 @@ class AdvancedSearchForm extends Component {
     const data = {
       name: "",
       author: "",
-      genres: [genres[0][0]._id],
+      genres: [genres[0][0]],
       tags: [""],
       minPrice: 0,
       maxPrice: 10000,
@@ -121,10 +121,12 @@ class AdvancedSearchForm extends Component {
 
   getFormattedData = () => {
     const genres = [];
+    console.log(this.state.data.genres);
     for (let i = 0; i < this.state.data.genres.length; i++) {
-      genres.push(this.state.data.genres[i]._id);
+      if(this.state.data.genres[i].name !== "")genres.push(this.state.data.genres[i]._id);
     }
 
+    if(genres.length === 0) genres.push("");
     const data = { ...this.state.data };
     data.genres = genres;
     return data;
@@ -134,7 +136,6 @@ class AdvancedSearchForm extends Component {
     e.preventDefault();
     console.log("inside hadlesubmit", this.getFormattedData());
     const books = await searchService.advancedSearch(this.getFormattedData());
-    console.log(books);
     this.setState({ books, submitted: true });
   };
 
