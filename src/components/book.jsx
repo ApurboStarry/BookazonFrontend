@@ -8,7 +8,7 @@ class Book extends Component {
       _id: "",
       name: "",
       authors: [],
-      genre: "",
+      genres: [],
       unitPrice: 0,
       quantity: 0,
       seller: "",
@@ -108,15 +108,30 @@ class Book extends Component {
     );
   }
 
+  getGenres = () => {
+    let genres = "";
+    
+    if(this.state.book.genres.length > 0) {
+      genres += this.state.book.genres[0].name;
+    }
+
+    for(let i = 1; i < this.state.book.genres.length; i++) {
+      genres += ", " +  this.state.book.genres[i].name;
+    }
+
+    return genres;
+  }
+
   render() {
     const { book } = this.state;
+    console.log(book);
     return (
       <div className="container">
         <div id="displayAParticularBook">
           <p>Title: {book.name}</p>
           <p>Authors: {this.getAuthors()}</p>
           <p>Price: {book.unitPrice}</p>
-          <p>Genre: {book.genre}</p>
+          <p>Genres: {this.getGenres()}</p>
           <p>Seller: {book.seller}</p>
           <p>Tags: {this.getTags()}</p>
 
