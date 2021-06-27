@@ -96,6 +96,18 @@ class Book extends Component {
     return tags;
   }
 
+  handleBuyNow = async () => {
+    await cartService.addBookToCart({
+      bookId: this.state.book._id,
+      quantity: this.state.quantity,
+      unitPrice: this.state.book.unitPrice,
+    });
+    
+    this.props.history.push(
+      "/deliveryType?totalAmount=" + this.state.book.unitPrice * this.state.quantity
+    );
+  }
+
   render() {
     const { book } = this.state;
     return (
@@ -142,7 +154,7 @@ class Book extends Component {
             <button onClick={this.handleAddToCart} className="btn btn-warning">
               Add to cart
             </button>
-            <button className="btn btn-success m-3">Buy now</button>
+            <button onClick={this.handleBuyNow} className="btn btn-success m-3">Buy now</button>
           </div>
         </div>
       </div>
