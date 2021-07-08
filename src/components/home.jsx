@@ -16,6 +16,8 @@ class Home extends Component {
     const books = await bookService.getBooks(this.state.pageNumber);
     const numberOfPages = await bookService.getNumberOfPages();
 
+    console.log(books);
+
     const pages = [];
     for (let i = 1; i <= numberOfPages; i++) {
       pages.push(i);
@@ -90,6 +92,10 @@ class Home extends Component {
     return authors;
   };
 
+  getBookCondition = (book) => {
+    return book.bookCondition.charAt(0).toUpperCase() + book.bookCondition.slice(1);
+  }
+
   render() {
     return (
       <div>
@@ -111,8 +117,11 @@ class Home extends Component {
                 >
                   Genre
                 </th>
-                <th className="tableHeader sortEnabledTableHeader" scope="col">
+                <th className="tableHeader" scope="col">
                   Authors
+                </th>
+                <th className="tableHeader" scope="col">
+                  Condition
                 </th>
                 <th
                   onClick={this.handleSortByUnitPrice}
@@ -120,6 +129,9 @@ class Home extends Component {
                   scope="col"
                 >
                   Unit Price
+                </th>
+                <th className="tableHeader" scope="col">
+                  In Stock
                 </th>
               </tr>
             </thead>
@@ -133,7 +145,9 @@ class Home extends Component {
                     </td>
                     <td>{this.getGenresOfBook(book)}</td>
                     <td>{this.getAuthors(book)}</td>
+                    <td>{this.getBookCondition(book)}</td>
                     <td>{book.unitPrice}</td>
+                    <td>{book.quantity}</td>
                   </tr>
                 );
               })}

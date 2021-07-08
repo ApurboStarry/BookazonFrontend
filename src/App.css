@@ -76,6 +76,19 @@ th {
   margin-bottom: 10px;
 }
 
+.bookDescription {
+  margin-bottom: 20px;
+}
+
+#bookDescriptionTextArea {
+  margin-left: 20;
+}
+
+#bookCondition {
+  border: 1px solid blue;
+  margin-bottom: 10px;
+}
+
 #addBookGenres {
   border: 1px solid blue;
   margin-bottom: 10px;

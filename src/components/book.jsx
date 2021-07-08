@@ -11,8 +11,10 @@ class Book extends Component {
       genres: [],
       unitPrice: 0,
       quantity: 0,
+      tags: [],
+      bookCondition: "",
+      description: "",
       seller: "",
-      tags: []
     },
     quantity: 1,
   };
@@ -122,6 +124,13 @@ class Book extends Component {
     return genres;
   }
 
+  getBookCondition = () => {
+    return (
+      this.state.book.bookCondition.charAt(0).toUpperCase() +
+      this.state.book.bookCondition.slice(1)
+    );
+  }
+
   render() {
     const { book } = this.state;
     console.log(book);
@@ -132,8 +141,11 @@ class Book extends Component {
           <p>Authors: {this.getAuthors()}</p>
           <p>Price: {book.unitPrice}</p>
           <p>Genres: {this.getGenres()}</p>
-          <p>Seller: {book.seller}</p>
           <p>Tags: {this.getTags()}</p>
+          <p>Condition: {this.getBookCondition()}</p>
+          <p>Description: {book.description}</p>
+          <p>Seller: {book.seller}</p>
+          <p>In Stock: {book.quantity}</p>
 
           <div
             style={{

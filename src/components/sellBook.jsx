@@ -3,6 +3,7 @@ import Input from "./common/input";
 import { apiUrl } from "../config.json";
 import httpService from "../services/httpService";
 import genreService from "../apiServices/genreService";
+import { toast } from "react-toastify";
 
 const apiEndpoint = apiUrl + "/books";
 
@@ -74,7 +75,9 @@ class SellBook extends Component {
       unitPrice: "",
       genres: [genres[0][0]._id],
       authors: [""],
+      bookCondition: "unused",
       tags: [""],
+      description: "",
       location: {
         latitude: 0.0,
         longitude: 0.0,
@@ -102,11 +105,15 @@ class SellBook extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
+    console.log(this.state.data);
 
     const errors = this.validate();
     this.setState({ errors: errors || {} });
 
-    if (errors) return;
+    if (errors) {
+      console.log("errors:-> ", errors);
+      return;
+    }
 
     this.parseInts();
     this.doSubmit();
@@ -121,7 +128,7 @@ class SellBook extends Component {
     const data = { ...this.state.data };
     data.genres = genres;
 
-    if(data.tags.length === 1 && data.tags[0] === "") {
+    if (data.tags.length === 1 && data.tags[0] === "") {
       data.tags = [];
     }
 
@@ -137,6 +144,10 @@ class SellBook extends Component {
         const errors = { ...this.state.errors };
         errors.username = ex.response.data;
         this.setState({ errors });
+      }
+
+      if(ex.response.data) {
+        toast.error(ex.response.data);
       }
     }
   };
@@ -163,6 +174,7 @@ class SellBook extends Component {
 
     const data = { ...this.state.data };
     data[input.name] = input.value;
+
     this.setState({ data, errors });
   };
 
@@ -278,7 +290,7 @@ class SellBook extends Component {
 
   handleUseCurrentLocation = async (e) => {
     e.preventDefault();
-    
+
     if (navigator.geolocation) {
       const options = {
         enableHighAccuracy: true,
@@ -286,15 +298,20 @@ class SellBook extends Component {
         maximumAge: 0,
       };
 
-      const result = await navigator.permissions
-        .query({ name: "geolocation" });
-      
-      if(result.state === "granted") {
+      const result = await navigator.permissions.query({ name: "geolocation" });
+
+      if (result.state === "granted") {
         navigator.geolocation.getCurrentPosition(this.success);
-      } else if(result.state === "prompt") {
-        navigator.geolocation.getCurrentPosition(this.success, this.errors, options);
+      } else if (result.state === "prompt") {
+        navigator.geolocation.getCurrentPosition(
+          this.success,
+          this.errors,
+          options
+        );
       } else {
-        alert("You have denied to access your location. Type your location manually");
+        alert(
+          "You have denied to access your location. Type your location manually"
+        );
       }
     } else {
       alert(
@@ -305,7 +322,7 @@ class SellBook extends Component {
 
   errors = (err) => {
     console.warn(`ERROR(${err.code}): ${err.message}`);
-  }
+  };
 
   success = (pos) => {
     var coordinate = pos.coords;
@@ -321,13 +338,18 @@ class SellBook extends Component {
     data.location.longitude = coordinate.longitude;
 
     this.setState({ data });
-  }
+  };
 
   handleLocationChange = ({ currentTarget: input }) => {
     const { data } = this.state;
     data.location[input.name] = input.value;
 
     this.setState({ data });
+  };
+
+  isBookConditionChecked = (condition) => {
+    if (this.state.data.bookCondition === condition) return true;
+    return false;
   };
 
   render() {
@@ -385,6 +407,46 @@ class SellBook extends Component {
               >
                 Add Author
               </button>
+            </div>
+          </div>
+
+          <div id="bookCondition">
+            <label style={{ paddingLeft: 5, paddingBottom: 5 }}>
+              Select book condition:
+            </label>
+            <div
+              style={{ marginLeft: 20, marginRight: 20, marginBottom: 10 }}
+              className="form-check"
+            >
+              <input
+                className="form-check-input"
+                type="radio"
+                name="bookCondition"
+                value="used"
+                id="usedBook"
+                checked={this.isBookConditionChecked("used")}
+                onChange={this.handleChange}
+              />
+              <label className="form-check-label" htmlFor="bookCondition">
+                Used
+              </label>
+            </div>
+            <div
+              style={{ marginLeft: 20, marginRight: 20, marginBottom: 10 }}
+              className="form-check"
+            >
+              <input
+                className="form-check-input"
+                type="radio"
+                name="bookCondition"
+                value="unused"
+                id="unusedBook"
+                checked={this.isBookConditionChecked("unused")}
+                onChange={this.handleChange}
+              />
+              <label className="form-check-label" htmlFor="bookCondition">
+                Unused
+              </label>
             </div>
           </div>
 
@@ -484,6 +546,23 @@ class SellBook extends Component {
             onChange={this.handleChange}
             error={errors.unitPrice}
           />
+
+          <div className="form-group bookDescription">
+            <label
+              style={{ paddingLeft: 5, marginBottom: 5 }}
+              htmlFor="description"
+            >
+              Description
+            </label>
+            <textarea
+              className="form-control"
+              id="description"
+              rows="3"
+              name="description"
+              value={this.state.data.description}
+              onChange={this.handleChange}
+            ></textarea>
+          </div>
 
           <div id="inputLocation">
             <label
