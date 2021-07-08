@@ -38,6 +38,11 @@ async function getBooksSortedByUnitPrice(order) {
   return books;
 }
 
+async function getFreeGiveaways() {
+  const { data: books } = await httpService.get(apiEndpoint + "/giveaways");
+  return books;
+}
+
 const defaultExportObj = {
   getNumberOfPages,
   getBooks,
@@ -45,6 +50,7 @@ const defaultExportObj = {
   getBooksSortedByTitle,
   getBooksSortedByGenre,
   getBooksSortedByUnitPrice,
+  getFreeGiveaways,
 };
 
 export default defaultExportObj;

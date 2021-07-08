@@ -71,6 +71,11 @@ th {
   margin: 0 auto;
 }
 
+#noFreeGiveaway {
+  width: 50%;
+  margin: 0 auto;
+}
+
 #addAuthor {
   border: 1px solid blue;
   margin-bottom: 10px;
@@ -87,6 +92,10 @@ th {
 #bookCondition {
   border: 1px solid blue;
   margin-bottom: 10px;
+}
+
+.unitPrice {
+  border: 1px solid blue;
 }
 
 #addBookGenres {

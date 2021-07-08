@@ -38,11 +38,11 @@ class NavBarBottom extends Component {
                   Authors
                 </NavLink>
               </li>
-              {/* <li className="nav-item">
-                <NavLink className="nav-link" to="/publishers">
-                  Publishers
+              <li className="nav-item">
+                <NavLink className="nav-link" to="/freeGiveaways">
+                  Giveaways
                 </NavLink>
-              </li> */}
+              </li>
 
               {user && (
                 <li className="nav-item">

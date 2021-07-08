@@ -38,7 +38,9 @@ class SellBook extends Component {
     selectedGenres: [],
   };
 
-  handleAddNewGenre = async () => {
+  handleAddNewGenre = async (e) => {
+    e.preventDefault();
+    
     const allGenres = await this.getAllNonParentGenres();
     const { availableGenres } = this.state;
     console.log("availableGenres", availableGenres);
@@ -146,7 +148,7 @@ class SellBook extends Component {
         this.setState({ errors });
       }
 
-      if(ex.response.data) {
+      if (ex.response.data) {
         toast.error(ex.response.data);
       }
     }
@@ -260,14 +262,18 @@ class SellBook extends Component {
     this.setState({ data });
   };
 
-  handleAddAuthor = () => {
+  handleAddAuthor = (e) => {
+    e.preventDefault();
+
     const data = { ...this.state.data };
     data.authors.push("");
 
     this.setState({ data });
   };
 
-  handleAddTag = () => {
+  handleAddTag = (e) => {
+    e.preventDefault();
+
     const data = { ...this.state.data };
     data.tags.push("");
 
@@ -351,6 +357,18 @@ class SellBook extends Component {
     if (this.state.data.bookCondition === condition) return true;
     return false;
   };
+
+  handleGiveawayClick = () => {
+    const { data } = this.state;
+    
+    if(this.state.data.unitPrice === "") {
+      data.unitPrice = "0";
+    } else {
+      data.unitPrice = "";
+    }
+
+    this.setState({ data });
+  }
 
   render() {
     const { data, errors, availableGenres } = this.state;
@@ -539,13 +557,43 @@ class SellBook extends Component {
             onChange={this.handleChange}
             error={errors.quantity}
           />
-          <Input
-            name="unitPrice"
-            value={data.unitPrice}
-            label="Unit Price"
-            onChange={this.handleChange}
-            error={errors.unitPrice}
-          />
+
+          <div className="mb-3 unitPrice">
+            <label
+              style={{ paddingLeft: 5 }}
+              htmlFor="unitPrice"
+              className="form-label"
+            >
+              Unit Price
+            </label>
+            <div
+              style={{ marginLeft: 20, marginBottom: 10 }}
+              class="form-check"
+            >
+              <input
+                class="form-check-input"
+                type="checkbox"
+                value=""
+                id="flexCheckDefault"
+                onClick={this.handleGiveawayClick}
+              />
+              <label class="form-check-label" for="flexCheckDefault">
+                Giveaway this book
+              </label>
+            </div>
+            <div
+              style={{ marginLeft: 20, marginRight: 20, marginBottom: 20 }}
+            >
+            <input
+              onChange={this.onChange}
+              value={data.unitPrice}
+              name="unitPrice"
+              type="text"
+              className="form-control"
+              id="unitPrice"
+            />              
+            </div>
+          </div>
 
           <div className="form-group bookDescription">
             <label
