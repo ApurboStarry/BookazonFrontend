@@ -76,6 +76,12 @@ th {
   margin: 0 auto;
 }
 
+#uploadBookImages {
+  width: 70%;
+  margin: 0 auto;
+  padding-top: 10px;
+}
+
 #addAuthor {
   border: 1px solid blue;
   margin-bottom: 10px;

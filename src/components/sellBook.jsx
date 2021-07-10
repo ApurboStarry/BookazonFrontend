@@ -40,7 +40,7 @@ class SellBook extends Component {
 
   handleAddNewGenre = async (e) => {
     e.preventDefault();
-    
+
     const allGenres = await this.getAllNonParentGenres();
     const { availableGenres } = this.state;
     console.log("availableGenres", availableGenres);
@@ -139,8 +139,9 @@ class SellBook extends Component {
 
   doSubmit = async () => {
     try {
-      await httpService.post(apiEndpoint, this.getFormattedData());
-      this.props.history.push("/");
+      const { data } = await httpService.post(apiEndpoint, this.getFormattedData());
+      console.log(data);
+      this.props.history.push("/book/uploadImages/" + data._id);
     } catch (ex) {
       if (ex.response && ex.response.status === 400) {
         const errors = { ...this.state.errors };
@@ -361,7 +362,7 @@ class SellBook extends Component {
   handleGiveawayClick = () => {
     const { data } = this.state;
     
-    if(this.state.data.unitPrice === "") {
+    if(this.state.data.unitPrice !== "0") {
       data.unitPrice = "0";
     } else {
       data.unitPrice = "";
@@ -585,7 +586,7 @@ class SellBook extends Component {
               style={{ marginLeft: 20, marginRight: 20, marginBottom: 20 }}
             >
             <input
-              onChange={this.onChange}
+              onChange={this.handleChange}
               value={data.unitPrice}
               name="unitPrice"
               type="text"
@@ -647,7 +648,7 @@ class SellBook extends Component {
 
           <div style={{ textAlign: "center", marginTop: 20 }}>
             <button disabled={this.validate()} className="btn btn-primary">
-              Add Book
+              Next
             </button>
           </div>
         </form>

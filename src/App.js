@@ -31,6 +31,7 @@ import MobileBanking from "./components/mobileBanking";
 import ConfirmPurchase from "./components/confirmPurchase";
 import TransactionHistory from "./components/transactionHistory";
 import FreeGiveaways from "./components/freeGiveaways";
+import UploadBookImages from "./components/uploadBookImages";
 class App extends Component {
   state = {};
 
@@ -46,7 +47,10 @@ class App extends Component {
       <div className="App">
         <div className="content">
           <Route path="/" component={NavBarTop} />
-          <Route path="/" render={(props) => <NavBarBottom user={user} {...props} />} />
+          <Route
+            path="/"
+            render={(props) => <NavBarBottom user={user} {...props} />}
+          />
           <Route path="/" component={ToastContainer} />
 
           <Switch>
@@ -62,6 +66,7 @@ class App extends Component {
             <Route path="/publishers" component={Publishers} />
             <Route path="/sellbook" component={SellBook} />
             <Route path="/cart" component={Cart} />
+            <Route path="/book/uploadImages" component={UploadBookImages} />
             <Route path="/book" component={Book} />
             <Route path="/freeGiveaways" component={FreeGiveaways} />
             <Route path="/deliveryType" component={DeliveryType} />
