@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import bookService from "../apiServices/bookService";
 import cartService from "../apiServices/cartService";
+import { Link } from "react-router-dom";
 
 class Book extends Component {
   state = {
@@ -15,6 +16,7 @@ class Book extends Component {
       bookCondition: "",
       description: "",
       seller: "",
+      images: [],
     },
     quantity: 1,
   };
@@ -62,41 +64,41 @@ class Book extends Component {
   handleQuantityDecrease = () => {
     const quantity = this.state.quantity - 1;
     this.setState({ quantity });
-  }
+  };
 
   handleQuantityIncrease = () => {
     const quantity = this.state.quantity + 1;
     this.setState({ quantity });
-  }
+  };
 
   handleAddToCart = async () => {
     await cartService.addBookToCart({
       bookId: this.state.book._id,
       quantity: this.state.quantity,
-      unitPrice: this.state.book.unitPrice
+      unitPrice: this.state.book.unitPrice,
     });
 
     this.props.history.push("/");
-  }
+  };
 
   isProductAvailable = () => {
     return this.state.book.quantity > 0;
-  }
+  };
 
   getTags = () => {
     let tags = "";
     const { book } = this.state;
 
-    if(book.tags.length > 0) {
+    if (book.tags.length > 0) {
       tags += book.tags[0];
     }
 
-    for(let i = 1; i < book.tags.length; i++) {
+    for (let i = 1; i < book.tags.length; i++) {
       tags += ", " + book.tags[i];
     }
 
     return tags;
-  }
+  };
 
   handleBuyNow = async () => {
     await cartService.addBookToCart({
@@ -104,46 +106,89 @@ class Book extends Component {
       quantity: this.state.quantity,
       unitPrice: this.state.book.unitPrice,
     });
-    
+
     this.props.history.push(
-      "/deliveryType?totalAmount=" + this.state.book.unitPrice * this.state.quantity
+      "/deliveryType?totalAmount=" +
+        this.state.book.unitPrice * this.state.quantity
     );
-  }
+  };
 
   getGenres = () => {
     let genres = "";
-    
-    if(this.state.book.genres.length > 0) {
+
+    if (this.state.book.genres.length > 0) {
       genres += this.state.book.genres[0].name;
     }
 
-    for(let i = 1; i < this.state.book.genres.length; i++) {
-      genres += ", " +  this.state.book.genres[i].name;
+    for (let i = 1; i < this.state.book.genres.length; i++) {
+      genres += ", " + this.state.book.genres[i].name;
     }
 
     return genres;
-  }
+  };
 
   getBookCondition = () => {
     return (
       this.state.book.bookCondition.charAt(0).toUpperCase() +
       this.state.book.bookCondition.slice(1)
     );
-  }
+  };
+
+  getAuthorLink = (author) => {
+    return (
+      <Link
+        style={{ marginRight: 10, textDecoration: "none" }}
+        to={"/search/byAuthor/" + author._id}
+      >
+        {author.name}
+      </Link>
+    );
+  };
+
+  getGenreLink = (genre) => {
+    return (
+      <Link
+        style={{ marginRight: 10, textDecoration: "none" }}
+        to={"/search/byGenre/" + genre._id}
+      >
+        {genre.name}
+      </Link>
+    );
+  };
 
   render() {
     const { book } = this.state;
     console.log(book);
     return (
-      <div className="container">
-        <div id="displayAParticularBook">
-          <p>Title: {book.name}</p>
-          <p>Authors: {this.getAuthors()}</p>
+      <div className="container mainBookContainer">
+        <div className="bookImages">
+          <img
+            src={book.images[0]}
+            class="img-fluid"
+            alt="..."
+          ></img>
+        </div>
+
+        <div className="bookInfo" id="displayAParticularBook">
+          <p>{book.name}</p>
+          <p>
+            by{" "}
+            {book.authors.map((author) => {
+              return this.getAuthorLink(author);
+            })}
+          </p>
           <p>Price: {book.unitPrice}</p>
-          <p>Genres: {this.getGenres()}</p>
-          <p>Tags: {this.getTags()}</p>
+          <p>
+            Genres:{" "}
+            {book.genres.map((genre) => {
+              return this.getGenreLink(genre);
+            })}
+          </p>
+          {book.tags.length > 0 && <p>Tags: {this.getTags()}</p>}
           <p>Condition: {this.getBookCondition()}</p>
-          <p>Description: {book.description}</p>
+          {book.description.length > 0 && (
+            <p>Description: {book.description}</p>
+          )}
           <p>Seller: {book.seller}</p>
           <p>In Stock: {book.quantity}</p>
 
@@ -178,10 +223,12 @@ class Book extends Component {
                 +
               </button>
             </p>
-            <button onClick={this.handleAddToCart} className="btn btn-warning">
+            <button style={{ marginRight: 10 }} onClick={this.handleAddToCart} className="btn btn-warning">
               Add to cart
             </button>
-            <button onClick={this.handleBuyNow} className="btn btn-success m-3">Buy now</button>
+            <button onClick={this.handleBuyNow} className="btn btn-success">
+              Buy now
+            </button>
           </div>
         </div>
       </div>

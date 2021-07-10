@@ -163,3 +163,17 @@ th {
   border: 1px solid blue;
   margin-bottom: 20;
 }
+
+.mainBookContainer {
+  display: flex;
+  margin-top: 20px;
+}
+
+.bookImages {
+  flex: 0 0 35%;
+  margin-right: 20px;
+}
+
+.bookInfo {
+  flex: 1;
+}
