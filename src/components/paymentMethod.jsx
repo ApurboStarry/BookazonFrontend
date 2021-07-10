@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import Radio from "./common/radio";
 
 class PaymentMethod extends Component {
-  state = { paymentMethod: "" };
+  state = { paymentMethod: "", deliveryAddress: "" };
 
   handleChange = (e) => {
     // console.log(e.target.value);
@@ -26,6 +26,10 @@ class PaymentMethod extends Component {
       this.props.history.push("/creditDebitCard");
     }
   };
+
+  handleDeliveryAddressChange = ({ currentTarget: input }) => {
+    this.setState({ deliveryAddress: input.value });
+  }
 
   render() {
     return (

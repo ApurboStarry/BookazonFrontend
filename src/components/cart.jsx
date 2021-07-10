@@ -38,6 +38,7 @@ class Cart extends Component {
 
   async componentDidMount() {
     const cart = await cartService.getAllBooksInCart();
+    console.log(cart);
     const totalPrice = this.calculateTotalPrice(cart);
     this.setState({ cart, totalPrice });
   }
@@ -125,11 +126,14 @@ class Cart extends Component {
     }
 
     return (
-      <div id="cart">
+      <div style={{ marginBottom: 20 }} id="cart">
         {this.state.cart.books.map((book) => {
           return (
             <div id="booksInCart" key={book._id}>
-              <div style={{ float: "left" }} id="cartDetails">
+              <div style={{ float: "left" }}>
+                <img src={book.images[0]} class="img-fluid p-5" alt="" />
+              </div>
+              <div style={{ float: "left", width: "30%" }} id="cartDetails">
                 <div>{book.bookId.name}</div>
                 <div>
                   Quantity:
@@ -159,7 +163,7 @@ class Cart extends Component {
                   </button>
                 </div>
               </div>
-              <div style={{ float: "right" }} id="cartBookDelete">
+              <div style={{ float: "left" }} id="cartBookDelete">
                 <button
                   onClick={() => this.handleBookDelete(book._id)}
                   className="btn btn-danger"

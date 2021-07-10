@@ -50,9 +50,9 @@ class DeliveryType extends Component {
                 id="homeDelivery"
                 value="homeDelivery"
                 label={
-                  "Home delivery: $" +
+                  "Home delivery: Tk " +
                   this.getTotalAmountIncludingDeliveryCharge() +
-                  `(${this.state.totalAmount} + $10(delivery charge))`
+                  `(Tk ${this.state.totalAmount} + Tk 10(delivery charge))`
                 }
                 onChange={this.handleChange}
               />
@@ -60,7 +60,7 @@ class DeliveryType extends Component {
                 name="delivery-type"
                 id="pickup"
                 value="pickup"
-                label={"Pickup: $" + this.state.totalAmount}
+                label={"Pickup: Tk " + this.state.totalAmount}
                 onChange={this.handleChange}
               />
             </div>

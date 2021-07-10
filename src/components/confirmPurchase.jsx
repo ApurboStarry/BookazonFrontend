@@ -7,6 +7,7 @@ class ConfirmPurchase extends Component {
   state = {
     paymentMethod: "",
     deliveryType: "",
+    deliveryAddress: "",
     cart: {
       books: [],
       ownerId: "",
@@ -57,11 +58,16 @@ class ConfirmPurchase extends Component {
     await buyService.buy({
       totalAmount: this.getOrderPrice(),
       paymentMethod: this.state.paymentMethod,
-      deliveryType: this.state.deliveryType
+      deliveryType: this.state.deliveryType,
+      deliveryAddress: this.state.deliveryAddress
     });
 
     toast.success("Order confirmed!");
     this.props.history.push("/");
+  }
+
+  handleDeliveryAddressChange = (e) => {
+    this.setState({ deliveryAddress: e.target.value });
   }
 
   render() {
@@ -84,6 +90,19 @@ class ConfirmPurchase extends Component {
         })}
 
         <p>Delivery Type: {this.state.deliveryType}</p>
+        {this.state.deliveryType === "Home Delivery" && (
+          <div style={{ marginBottom: 20 }} class="form-group">
+            <label for="exampleFormControlTextarea1">Delivery Address</label>
+            <textarea
+              class="form-control"
+              id="exampleFormControlTextarea1"
+              name="deliveryAddress"
+              value={this.state.deliveryAddress}
+              onChange={this.handleDeliveryAddressChange}
+              rows="3"
+            ></textarea>
+          </div>
+        )}
         <p>Payment Method: {this.state.paymentMethod}</p>
         <p>Total Price: {this.getOrderPrice()}</p>
         <button onClick={this.handleConfirmOrder} className="btn btn-success">

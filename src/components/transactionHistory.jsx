@@ -11,6 +11,14 @@ class TransactionHistory extends Component {
   }
   
   render() {
+    if(this.state.transactions.length === 0) {
+      return (
+        <div className="showTransactionHistory">
+          <h3>No transactions made so far</h3>
+        </div>
+      );
+    }
+
     return (
       <div id="showTransactionHistory">
         <h3>Transaction History</h3>
