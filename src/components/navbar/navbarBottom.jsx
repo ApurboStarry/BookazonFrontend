@@ -44,13 +44,11 @@ class NavBarBottom extends Component {
                 </NavLink>
               </li>
 
-              {user && (
-                <li className="nav-item">
-                  <NavLink className="nav-link" to="/sellbook">
-                    Sell Book
-                  </NavLink>
-                </li>
-              )}
+              <li className="nav-item">
+                <NavLink className="nav-link" to={user ? "/sellbook" : "/login"}>
+                  Sell Book
+                </NavLink>
+              </li>
               {user && (
                 <li className="nav-item">
                   <NavLink className="nav-link" to="/cart">
@@ -65,6 +63,11 @@ class NavBarBottom extends Component {
                   </NavLink>
                 </li>
               )}
+              <li className="nav-item">
+                <NavLink className="nav-link" to="/feedback">
+                  Feedback
+                </NavLink>
+              </li>
               {user && (
                 <li className="nav-item">
                   <NavLink className="nav-link" to="/logout">
