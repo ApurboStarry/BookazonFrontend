@@ -194,3 +194,12 @@ th {
   width:25%;
   text-align: center;
 }
+
+#giveawayText {
+  background-color: red;
+  color: white;
+  display: inline-block;
+  padding: 20px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}

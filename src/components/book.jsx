@@ -197,7 +197,11 @@ class Book extends Component {
             </button>
           </div>
           <div id="bookImage">
-            <img src={book.images[this.state.currentImageIndex]} class="img-fluid" alt="..."></img>
+            <img
+              src={book.images[this.state.currentImageIndex]}
+              class="img-fluid"
+              alt="..."
+            ></img>
           </div>
           <div id="bookImageButtonRight">
             <button
@@ -218,7 +222,14 @@ class Book extends Component {
               return this.getAuthorLink(author);
             })}
           </p>
-          <p>Price: {book.unitPrice}</p>
+
+          {book.unitPrice === 0 && (
+            <div id="giveawayText">
+              <b style={{ margin: 0 }}>This book is under giveaway</b>
+            </div>
+          )}
+          {book.unitPrice > 0 && <p>Price: {book.unitPrice}</p>}
+
           <p>
             Genres:{" "}
             {book.genres.map((genre) => {
