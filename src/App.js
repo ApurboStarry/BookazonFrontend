@@ -32,6 +32,7 @@ import ConfirmPurchase from "./components/confirmPurchase";
 import TransactionHistory from "./components/transactionHistory";
 import FreeGiveaways from "./components/freeGiveaways";
 import UploadBookImages from "./components/uploadBookImages";
+import ReportTransaction from "./components/reportTransaction";
 class App extends Component {
   state = {};
 
@@ -70,6 +71,7 @@ class App extends Component {
             <Route path="/book" component={Book} />
             <Route path="/freeGiveaways" component={FreeGiveaways} />
             <Route path="/deliveryType" component={DeliveryType} />
+            <Route path="/reportTransaction" component={ReportTransaction}/>
             <Route path="/transactionHistory" component={TransactionHistory} />
             <Route path="/mobileBanking" component={MobileBanking} />
             <Route path="/confirmPurchase" component={ConfirmPurchase} />

@@ -203,3 +203,9 @@ th {
   margin-bottom: 10px;
   border-radius: 5px;
 }
+
+#reportTransaction {
+  width: 80%;
+  margin: 0 auto;
+  margin-top: 20px;
+}

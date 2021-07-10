@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 import buyService from "../apiServices/buyService";
 
 class TransactionHistory extends Component {
@@ -25,21 +26,26 @@ class TransactionHistory extends Component {
         {this.state.transactions.map(transaction => {
           return (
             <div id="transactionList" key={transaction._id}>
-              <p>Order No. {transaction._id}</p>
+              <p>Transaction No. {transaction._id}</p>
               <p>Books:</p>
               <div id="booksInTransaction">
-                {transaction.books.map(book => {
+                {transaction.books.map((book) => {
                   return (
-                    <p>{book.bookId.name}</p>
-                  )
+                    <p style={{ fontWeight: "bold" }}>{book.bookId.name}</p>
+                  );
                 })}
               </div>
               <p>Total Price: ${transaction.totalAmount}</p>
               <p>Transaction Date: {transaction.transactionDate}</p>
               <p>Delivery Type: {transaction.deliveryType}</p>
               <p>Payment Method: {transaction.paymentMethod}</p>
+              <Link to={"/reportTransaction/" + transaction._id}>
+                <button className="btn btn-danger">
+                  Report this transaction
+                </button>
+              </Link>
             </div>
-          )
+          );
         })}
       </div>
     );

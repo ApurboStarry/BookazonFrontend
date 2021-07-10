@@ -13,9 +13,15 @@ async function buy(body) {
   return data;
 }
 
+async function reportTransaction(transactionId, body) {
+  const { data } = await httpService.post(apiEndpoint + "/report/" + transactionId, body);
+  return data;
+}
+
 const defaultExportObj = {
   getTransactionHistory,
-  buy
+  buy,
+  reportTransaction
 };
 
 export default defaultExportObj;
