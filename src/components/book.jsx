@@ -19,6 +19,7 @@ class Book extends Component {
       images: [],
     },
     quantity: 1,
+    currentImageIndex: 0,
   };
 
   getBookIdFromUrl = () => {
@@ -156,17 +157,57 @@ class Book extends Component {
     );
   };
 
+  handlePrevImageClick = () => {
+    const currentImageIndex = this.state.currentImageIndex;
+    if (currentImageIndex === 0) return;
+
+    console.log("currentImageIndex", currentImageIndex);
+    this.setState({ currentImageIndex: currentImageIndex - 1 });
+  };
+
+  handleNextImageClick = () => {
+    const currentImageIndex = this.state.currentImageIndex;
+    if (currentImageIndex === this.state.book.images.length - 1) return;
+
+    console.log("currentImageIndex", currentImageIndex);
+    this.setState({ currentImageIndex: currentImageIndex + 1 });
+  };
+
+  isDisabledPrevImage = () => {
+    return this.state.currentImageIndex === 0;
+  };
+
+  isDisabledNextImage = () => {
+    return this.state.currentImageIndex === this.state.book.images.length - 1;
+  };
+
   render() {
     const { book } = this.state;
     console.log(book);
     return (
       <div className="container mainBookContainer">
         <div className="bookImages">
-          <img
-            src={book.images[0]}
-            class="img-fluid"
-            alt="..."
-          ></img>
+          <div id="bookImageButtonLeft">
+            <button
+              onClick={this.handlePrevImageClick}
+              disabled={this.isDisabledPrevImage()}
+              className="btn btn-primary"
+            >
+              {"<"}
+            </button>
+          </div>
+          <div id="bookImage">
+            <img src={book.images[this.state.currentImageIndex]} class="img-fluid" alt="..."></img>
+          </div>
+          <div id="bookImageButtonRight">
+            <button
+              onClick={this.handleNextImageClick}
+              disabled={this.isDisabledNextImage()}
+              className="btn btn-primary"
+            >
+              {">"}
+            </button>
+          </div>
         </div>
 
         <div className="bookInfo" id="displayAParticularBook">
@@ -223,7 +264,11 @@ class Book extends Component {
                 +
               </button>
             </p>
-            <button style={{ marginRight: 10 }} onClick={this.handleAddToCart} className="btn btn-warning">
+            <button
+              style={{ marginRight: 10 }}
+              onClick={this.handleAddToCart}
+              className="btn btn-warning"
+            >
               Add to cart
             </button>
             <button onClick={this.handleBuyNow} className="btn btn-success">

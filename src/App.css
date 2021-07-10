@@ -177,3 +177,20 @@ th {
 .bookInfo {
   flex: 1;
 }
+
+#bookImageButtonLeft {
+  float:left; 
+  width:25%;
+  text-align: center;
+}
+
+#bookImage {
+  float:left; 
+  width:50%;
+}
+
+#bookImageButtonRight {
+  float:left; 
+  width:25%;
+  text-align: center;
+}
