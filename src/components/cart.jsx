@@ -122,7 +122,7 @@ class Cart extends Component {
 
   render() {
     if (!this.state.cart || this.state.cart.books.length === 0) {
-      return <h3 style={{width: "80%", margin: "0 auto"}}>Nothing in the cart right now</h3>;
+      return <h3 style={{width: "50%", margin: "0 auto"}}>Nothing in the cart right now</h3>;
     }
 
     return (
