@@ -7,7 +7,7 @@ class Home extends Component {
     pageNumber: 1,
     pages: [],
     books: [],
-    sortByTitle: 0,
+    sortByTitle: -1,
     sortByGenre: 0,
     sortByUnitPrice: 0,
   };
@@ -36,7 +36,7 @@ class Home extends Component {
       this.state.sortByTitle === 0 || this.state.sortByTitle === -1 ? 1 : -1;
     const order = sortByTitle === 1 ? "ascending" : "descending";
     const books = await bookService.getBooksSortedByTitle(order);
-    this.setState({ books, sortByTitle });
+    this.setState({ books, sortByTitle, sortByGenre: 0, sortByGenre: 0 });
   };
 
   handleSortByGenre = async () => {
@@ -44,7 +44,7 @@ class Home extends Component {
       this.state.sortByGenre === 0 || this.state.sortByGenre === -1 ? 1 : -1;
     const order = sortByGenre === 1 ? "ascending" : "descending";
     const books = await bookService.getBooksSortedByGenre(order);
-    this.setState({ books, sortByGenre });
+    this.setState({ books, sortByTitle: 0, sortByGenre, sortByUnitPrice: 0 });
   };
 
   handleSortByUnitPrice = async () => {
@@ -54,7 +54,7 @@ class Home extends Component {
         : -1;
     const order = sortByUnitPrice === 1 ? "ascending" : "descending";
     const books = await bookService.getBooksSortedByUnitPrice(order);
-    this.setState({ books, sortByUnitPrice });
+    this.setState({ books, sortByTitle: 0, sortByGenre: 0, sortByUnitPrice });
   };
 
   isSortApplied = () => {
@@ -108,7 +108,17 @@ class Home extends Component {
                   className="tableHeader sortEnabledTableHeader"
                   scope="col"
                 >
-                  Title
+                  Title{" "}
+                  {this.state.sortByTitle === 1 && (
+                    <span>
+                      <i class="fa fa-sort-asc" aria-hidden="true"></i>
+                    </span>
+                  )}
+                  {this.state.sortByTitle === -1 && (
+                    <span>
+                      <i class="fa fa-sort-desc" aria-hidden="true"></i>
+                    </span>
+                  )}
                 </th>
                 <th
                   onClick={this.handleSortByGenre}
@@ -116,6 +126,16 @@ class Home extends Component {
                   scope="col"
                 >
                   Genre
+                  {this.state.sortByGenre === 1 && (
+                    <span style={{ padding: 5 }}>
+                      <i class="fa fa-sort-asc" aria-hidden="true"></i>
+                    </span>
+                  )}
+                  {this.state.sortByGenre === -1 && (
+                    <span style={{ padding: 5 }}>
+                      <i class="fa fa-sort-desc" aria-hidden="true"></i>
+                    </span>
+                  )}
                 </th>
                 <th className="tableHeader" scope="col">
                   Authors
@@ -129,6 +149,16 @@ class Home extends Component {
                   scope="col"
                 >
                   Unit Price
+                  {this.state.sortByUnitPrice === 1 && (
+                    <span style={{ padding: 5 }}>
+                      <i class="fa fa-sort-asc" aria-hidden="true"></i>
+                    </span>
+                  )}
+                  {this.state.sortByUnitPrice === -1 && (
+                    <span style={{ padding: 5 }}>
+                      <i class="fa fa-sort-desc" aria-hidden="true"></i>
+                    </span>
+                  )}
                 </th>
                 <th className="tableHeader" scope="col">
                   In Stock
