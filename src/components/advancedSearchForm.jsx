@@ -17,6 +17,11 @@ class AdvancedSearchForm extends Component {
     submitted: false,
     books: [],
     availableGenres: [[{ _id: "1", name: "" }]],
+    isSortedByLocation: false,
+    location: {
+      latitude: 0.0,
+      longitude: 0.0,
+    },
   };
 
   handleAddNewGenre = async (e) => {
@@ -123,10 +128,11 @@ class AdvancedSearchForm extends Component {
     const genres = [];
     console.log(this.state.data.genres);
     for (let i = 0; i < this.state.data.genres.length; i++) {
-      if(this.state.data.genres[i].name !== "")genres.push(this.state.data.genres[i]._id);
+      if (this.state.data.genres[i].name !== "")
+        genres.push(this.state.data.genres[i]._id);
     }
 
-    if(genres.length === 0) genres.push("");
+    if (genres.length === 0) genres.push("");
     const data = { ...this.state.data };
     data.genres = genres;
     return data;
@@ -165,11 +171,81 @@ class AdvancedSearchForm extends Component {
     this.setState({ data });
   };
 
+  handleSortByLocation = async (e) => {
+    e.preventDefault();
+
+    if (navigator.geolocation) {
+      const options = {
+        enableHighAccuracy: true,
+        timeout: 5000,
+        maximumAge: 0,
+      };
+
+      const result = await navigator.permissions.query({ name: "geolocation" });
+
+      if (result.state === "granted") {
+        navigator.geolocation.getCurrentPosition(this.success);
+      } else if (result.state === "prompt") {
+        navigator.geolocation.getCurrentPosition(
+          this.success,
+          this.errors,
+          options
+        );
+      } else {
+        alert(
+          "You have denied to access your location. So, books cannot be sorted based on your current location."
+        );
+      }
+    } else {
+      alert(
+        "Cannot get your location from the browser. So, books cannot be sorted based on your current location."
+      );
+    }
+  };
+
+  errors = (err) => {
+    console.warn(`ERROR(${err.code}): ${err.message}`);
+  };
+
+  success = async (pos) => {
+    var coordinate = pos.coords;
+
+    // console.log("Your current position is:");
+    // console.log(`Latitude : ${coordinate.latitude}`);
+    // console.log(`Longitude: ${coordinate.longitude}`);
+    // console.log(`More or less ${coordinate.accuracy} meters.`);
+
+    const { location } = this.state;
+
+    location.latitude = coordinate.latitude;
+    location.longitude = coordinate.longitude;
+
+    const isSortedByLocation = this.state.isSortedByLocation;
+    let books;
+
+    console.log(location);
+
+    if (!isSortedByLocation) {
+      // sort based on location
+      books = await searchService.advancedSearchWithSortByLocation(
+        this.getFormattedData(),
+        location
+      );
+    } else {
+      // no sort
+      books = await searchService.advancedSearch(this.getFormattedData());
+    }
+
+    this.setState({ books, isSortedByLocation: !isSortedByLocation, location });
+  };
+
   render() {
     if (this.state.submitted === true) {
       return (
         <ShowBooksTabular
+          isSortedByLocation={this.state.isSortedByLocation}
           books={this.state.books}
+          handleSortByLocation={this.handleSortByLocation}
         />
       );
     }

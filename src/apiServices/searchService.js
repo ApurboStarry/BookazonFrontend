@@ -72,6 +72,18 @@ async function advancedSearch(searchBody) {
   return books;
 }
 
+async function advancedSearchWithSortByLocation(searchBody, location) {
+  const { data: books } = await httpService.post(
+    apiEndpoint +
+      "/advancedSearch?latitude=" +
+      location.latitude +
+      "&longitude=" +
+      location.longitude,
+    searchBody
+  );
+  return books;
+}
+
 const defaultExportObj = {
   searchBooksByTitle,
   searchBooksByTitleAndSortByLocation,
@@ -80,6 +92,7 @@ const defaultExportObj = {
   searchBooksByAuthorId,
   searchBooksByAuthorIdAndSortByLocation,
   advancedSearch,
+  advancedSearchWithSortByLocation,
 };
 
 export default defaultExportObj;
