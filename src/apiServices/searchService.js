@@ -10,6 +10,19 @@ async function searchBooksByTitle(searchTitle) {
   return books;
 }
 
+async function searchBooksByTitleAndSortByLocation(searchTitle, location) {
+  const { data: books } = await httpService.get(
+    apiEndpoint +
+      "/byName/" +
+      searchTitle +
+      "?latitude=" +
+      location.latitude +
+      "&longitude=" +
+      location.longitude
+  );
+  return books;
+}
+
 async function searchBooksByGenreId(genreId) {
   const { data: books } = await httpService.get(
     apiEndpoint + "/byGenre/" + genreId
@@ -61,6 +74,7 @@ async function advancedSearch(searchBody) {
 
 const defaultExportObj = {
   searchBooksByTitle,
+  searchBooksByTitleAndSortByLocation,
   searchBooksByGenreId,
   searchBooksByGenreIdAndSortByLocation,
   searchBooksByAuthorId,
