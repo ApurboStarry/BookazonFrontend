@@ -38,6 +38,13 @@ async function getBooksSortedByUnitPrice(order) {
   return books;
 }
 
+async function getBooksSortedByLocation(latitude, longitude) {
+  const { data: books } = await httpService.get(
+    apiEndpoint + "/sortBy/location?latitude=" + latitude + "&longitude=" + longitude
+  );
+  return books;
+}
+
 async function getFreeGiveaways() {
   const { data: books } = await httpService.get(apiEndpoint + "/giveaways");
   return books;
@@ -50,6 +57,7 @@ const defaultExportObj = {
   getBooksSortedByTitle,
   getBooksSortedByGenre,
   getBooksSortedByUnitPrice,
+  getBooksSortedByLocation,
   getFreeGiveaways,
 };
 

@@ -7,9 +7,14 @@ class Home extends Component {
     pageNumber: 1,
     pages: [],
     books: [],
-    sortByTitle: -1,
+    sortByTitle: 0,
     sortByGenre: 0,
     sortByUnitPrice: 0,
+    isSortedByLocation: false,
+    location: {
+      latitude: 0.0,
+      longitude: 0.0,
+    },
   };
 
   async componentDidMount() {
@@ -93,13 +98,92 @@ class Home extends Component {
   };
 
   getBookCondition = (book) => {
-    return book.bookCondition.charAt(0).toUpperCase() + book.bookCondition.slice(1);
-  }
+    return (
+      book.bookCondition.charAt(0).toUpperCase() + book.bookCondition.slice(1)
+    );
+  };
+
+  handleSortByLocation = async (e) => {
+    e.preventDefault();
+
+    if (navigator.geolocation) {
+      const options = {
+        enableHighAccuracy: true,
+        timeout: 5000,
+        maximumAge: 0,
+      };
+
+      const result = await navigator.permissions.query({ name: "geolocation" });
+
+      if (result.state === "granted") {
+        navigator.geolocation.getCurrentPosition(this.success);
+      } else if (result.state === "prompt") {
+        navigator.geolocation.getCurrentPosition(
+          this.success,
+          this.errors,
+          options
+        );
+      } else {
+        alert(
+          "You have denied to access your location. So, books cannot be sorted based on your current location."
+        );
+      }
+    } else {
+      alert(
+        "Cannot get your location from the browser. So, books cannot be sorted based on your current location."
+      );
+    }
+  };
+
+  errors = (err) => {
+    console.warn(`ERROR(${err.code}): ${err.message}`);
+  };
+
+  success = async (pos) => {
+    var coordinate = pos.coords;
+
+    // console.log("Your current position is:");
+    // console.log(`Latitude : ${coordinate.latitude}`);
+    // console.log(`Longitude: ${coordinate.longitude}`);
+    // console.log(`More or less ${coordinate.accuracy} meters.`);
+
+    const { location } = this.state;
+
+    location.latitude = coordinate.latitude;
+    location.longitude = coordinate.longitude;
+
+    const isSortedByLocation = this.state.isSortedByLocation;
+    let books;
+
+    console.log(location);
+
+    if (!isSortedByLocation) {
+      // sort based on location
+      books = await bookService.getBooksSortedByLocation(location.latitude, location.longitude);
+    } else {
+      // no sort
+      books = await bookService.getBooks(this.state.pageNumber);
+    }
+
+    this.setState({ books, isSortedByLocation: !isSortedByLocation, location });
+  };
 
   render() {
     return (
       <div>
         <div className="booksTable">
+          <div style={{ marginTop: 10 }} className="form-check">
+            <input
+              className="form-check-input"
+              type="checkbox"
+              id="flexCheckDefault"
+              checked={this.state.isSortedByLocation}
+              onChange={this.handleSortByLocation}
+            />
+            <label className="form-check-label" htmlFor="flexCheckDefault">
+              Sort books closest to your location
+            </label>
+          </div>
           <table className="table">
             <thead>
               <tr>
@@ -111,12 +195,12 @@ class Home extends Component {
                   Title{" "}
                   {this.state.sortByTitle === 1 && (
                     <span>
-                      <i class="fa fa-sort-asc" aria-hidden="true"></i>
+                      <i className="fa fa-sort-asc" aria-hidden="true"></i>
                     </span>
                   )}
                   {this.state.sortByTitle === -1 && (
                     <span>
-                      <i class="fa fa-sort-desc" aria-hidden="true"></i>
+                      <i className="fa fa-sort-desc" aria-hidden="true"></i>
                     </span>
                   )}
                 </th>
@@ -128,12 +212,12 @@ class Home extends Component {
                   Genre
                   {this.state.sortByGenre === 1 && (
                     <span style={{ padding: 5 }}>
-                      <i class="fa fa-sort-asc" aria-hidden="true"></i>
+                      <i className="fa fa-sort-asc" aria-hidden="true"></i>
                     </span>
                   )}
                   {this.state.sortByGenre === -1 && (
                     <span style={{ padding: 5 }}>
-                      <i class="fa fa-sort-desc" aria-hidden="true"></i>
+                      <i className="fa fa-sort-desc" aria-hidden="true"></i>
                     </span>
                   )}
                 </th>
@@ -151,12 +235,12 @@ class Home extends Component {
                   Unit Price
                   {this.state.sortByUnitPrice === 1 && (
                     <span style={{ padding: 5 }}>
-                      <i class="fa fa-sort-asc" aria-hidden="true"></i>
+                      <i className="fa fa-sort-asc" aria-hidden="true"></i>
                     </span>
                   )}
                   {this.state.sortByUnitPrice === -1 && (
                     <span style={{ padding: 5 }}>
-                      <i class="fa fa-sort-desc" aria-hidden="true"></i>
+                      <i className="fa fa-sort-desc" aria-hidden="true"></i>
                     </span>
                   )}
                 </th>
@@ -184,7 +268,7 @@ class Home extends Component {
             </tbody>
           </table>
 
-          {!this.isSortApplied() && (
+          {!this.isSortApplied() && !this.state.isSortedByLocation && (
             <nav aria-label="Page navigation example">
               <ul className="pagination">
                 {this.state.pages.map((page) => {

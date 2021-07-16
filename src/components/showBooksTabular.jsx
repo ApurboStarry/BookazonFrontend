@@ -48,6 +48,20 @@ class ShowBooksTabular extends Component {
 
     return (
       <div className="booksTable">
+
+        <div style={{ marginTop: 10 }} className="form-check">
+          <input
+            className="form-check-input"
+            type="checkbox"
+            id="flexCheckDefault"
+            checked={this.props.isSortedByLocation}
+            onChange={this.props.handleSortByLocation}
+          />
+          <label className="form-check-label" htmlFor="flexCheckDefault">
+            Sort books closest to your location
+          </label>
+        </div>
+
         <table className="table">
           <thead>
             <tr>
