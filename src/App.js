@@ -34,6 +34,9 @@ import FreeGiveaways from "./components/freeGiveaways";
 import UploadBookImages from "./components/uploadBookImages";
 import ReportTransaction from "./components/reportTransaction";
 import Feedback from "./components/feedback";
+import AdminInterface from "./components/adminInterface";
+import RootGenres from './components/rootGenres';
+import ChildGenres from "./components/childGenres";
 class App extends Component {
   state = {};
 
@@ -82,6 +85,11 @@ class App extends Component {
             <Route path="/search/byGenre" component={SearchByGenre} />
             <Route path="/search/byAuthor" component={SearchByAuthor} />
             <Route path="/search/byTitle" component={SearchByTitle} />
+
+            <Route path="/adminInterface/subGenres" component={ChildGenres} />
+            <Route path="/adminInterface/genres" component={RootGenres} />
+            <Route path="/adminInterface" component={AdminInterface} />
+
             <Route path="/" component={Home} />
           </Switch>
         </div>
